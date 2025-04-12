@@ -7,6 +7,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="ChemDoodleWeb.css">
+        <script src="ChemDoodleWeb.js"></script>
         <style>
             @font-face{
                 font-family: "Noto Sans";
@@ -26,6 +28,7 @@
                 font-family: "Noto Sans";
                 margin: 0;
                 padding: 0;
+                background-color: #EBEBEB8D;
             }
             h1{
                 font-family: "Noto Sans";
@@ -36,6 +39,11 @@
                 text-align: center;
                 padding: 0;
             }
+            h2{
+                font-size: 2rem;
+                margin: 0;
+                text-align: center;
+            }
             #footer{
                 font-family: "Noto Sans";
                 text-align: center;
@@ -43,16 +51,32 @@
                 color: #FFF;
                 padding: .3rem;
                 font-size: 1rem;
-                width: 100%;
+                max-width: 100%;
+                margin: 0;
+            }
+            #main{
+                background-color: #FFF;
+                margin: 0;
+                
+            }
+            div{
+                margin: 0;
             }
         </style>
     </head>
     <body>
         <h1>Chemistry Utility</h1>
         <main id="main">
-            <nav id="nav">
-                
-            </nav>
+            <div id="balancing">
+                <h2>Chemical Equation Balancer</h2>
+
+            </div>
+            <div id="mass-calc">
+                <h2>Molar Mass Calculation (uses 2 decimal place values)</h2>
+            </div>
+            <div id="stoichiometry">
+                <h2>Stoichiometry</h2>
+            </div>
         </main>
         <footer id="footer">
             <p>&copy; 2025 Richards's Blogs | All Rights Reserved</p>
