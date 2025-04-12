@@ -1,0 +1,15 @@
+{
+  "name": "chemical-equation-balancing",
+  "version": "1.0.0",
+  "description": "A program designed to balance chemical equations made with HTML, CSS, and JavaScript.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "richie-rich90454",
+  "license": "MIT",
+  "dependencies": {
+    "katex": "^0.16.22"
+  }
+}
