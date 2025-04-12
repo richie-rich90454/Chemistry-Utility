@@ -3,7 +3,7 @@ let path=require("path");
 let{ v4: uuidv4 }=require("uuid");
 let fs=require("fs");
 let app=express();
-let PORT=process.env.PORT||6002;
+let PORT=6002;
 app.disable("x-powered-by");
 app.use((req, res, next)=>{
     try{
@@ -26,7 +26,7 @@ try{
     if (!fs.existsSync(ptableSource)){
         throw new Error("ptable.json not found");
     }
-    fs.copyFileSync(ptableSource, ptableDest, fs.letants.COPYFILE_FICLONE);
+    fs.copyFileSync(ptableSource, ptableDest, fs.constants.COPYFILE_FICLONE);
     fs.chmodSync(ptableDest, 0o644);
 }
 catch (err){
