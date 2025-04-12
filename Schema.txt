@@ -1,0 +1,15 @@
+{
+    symbol: String, // Element symbol
+    name: String, // Element name
+    atomicMass: Number, // Atomic mass in u (unified atomic mass units)
+    atomicNumber: Number, // Atomic number (1-118)
+    electronegativity: Number | null, // Pauling scale (null if not applicable)
+    electronAffinity: Number | null, // in kJ/mol
+    atomicRadius: Number | null, // in picometers (pm)
+    ionizationEnergy: Number | null, // First ionization energy in kJ/mol
+    valenceElectrons: Number, // Number of valence electrons
+    totalElectrons: Number, // Total number of electrons (same as atomic number)
+    group: Number, // Group number (1-18)
+    period: Number, // Period number (1-7)
+    type: String // Element type/category
+}
