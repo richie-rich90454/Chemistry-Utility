@@ -1,5 +1,4 @@
 let express=require("express");
-let path=require("path");
 let app=express();
 let PORT=6002;
 app.get("/ptable.json", (req, res)=>{
@@ -7,7 +6,7 @@ app.get("/ptable.json", (req, res)=>{
 });
 app.get("/api/ptable", (req, res)=>{
     if (req.get("X-Requested-With")!=="XMLHttpRequest") {
-      return res.status(403).send("403 Forbidden");
+      res.status(403).send("403 Forbidden");
     }
     res.sendFile(path.join(__dirname, "ptable.json"));
 });
