@@ -136,4 +136,4 @@ dist
 .pnp.*
 
 #ptable json file for storing values
-ptab.json
+ptable.json
