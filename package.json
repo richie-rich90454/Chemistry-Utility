@@ -10,6 +10,8 @@
   "author": "richie-rich90454",
   "license": "MIT",
   "dependencies": {
-    "katex": "^0.16.22"
+    "express": "^5.1.0",
+    "katex": "^0.16.22",
+    "path": "^0.12.7"
   }
 }
