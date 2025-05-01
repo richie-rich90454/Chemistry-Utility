@@ -7,8 +7,6 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="ChemDoodleWeb.css">
-        <script src="ChemDoodleWeb.js"></script>
         <style>
             @font-face{
                 font-family: "Noto Sans";
@@ -21,7 +19,7 @@
                 font-family: "Noto Sans";
                 margin: 0;
                 padding: 0;
-                background-color: #EBEBEB8D;
+                background-color: #EBEBEB;
             }
             h1{
                 font-family: "Noto Sans";
@@ -56,7 +54,7 @@
                 margin: 0;
             }
             a{
-                color: #FFF;
+                color: #1C94E9;
             }
             .main-groups{
                 border-top: 2px solid #000;
@@ -66,7 +64,6 @@
                 border-bottom: 2px solid #000;
             }
         </style>
-        <script src="/script.js" defer></script>
     </head>
     <body>
         <header>
@@ -75,6 +72,10 @@
         <main id="main">
             <div id="element-lookup" class="main-groups">
                 <h2>Element Information Lookup</h2>
+                <p>Entere the element symbol or name of the element you want to look up: </p>
+                <input type="text" id="element-input">
+                <button id="lookup-button">Lookup Element</button>
+                <div id="element-info"></div>
             </div>
             <div id="balancing" class="main-groups">
                 <h2>Chemical Equation Balancer</h2>
@@ -91,5 +92,6 @@
             <p>&copy; 2025 Richards's Blogs | All Rights Reserved</p>
             <p>Main site: <a href="https://www.richardsblogs.com" target="_blank">www.richardsblogs.com</a></p>
         </footer>
+        <script src="script.js"></script>
     </body>
 </html>

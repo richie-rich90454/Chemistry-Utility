@@ -1,3 +1,4 @@
+To create the ptable.json file, you could use this schematic to complete from 1 to 118
 {
     symbol: String, // Element symbol
     name: String, // Element name
