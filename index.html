@@ -12,7 +12,7 @@
         <style>
             @font-face{
                 font-family: "Noto Sans";
-                src: url("NotoSans-VariableFont_wdth,wght.ttf") format("ttf");
+                src: url("NotoSans-VariableFont_wdth,wght.ttf") format("truetype");
                 font-weight: 300;
                 font-style: normal;
                 font-display: swap;
@@ -58,20 +58,32 @@
             a{
                 color: #FFF;
             }
+            .main-groups{
+                border-top: 2px solid #000;
+                margin: .5rem;
+            }
+            #stoichiometry{
+                border-bottom: 2px solid #000;
+            }
         </style>
         <script src="/script.js" defer></script>
     </head>
     <body>
-        <h1>Chemistry Utility</h1>
+        <header>
+            <h1>Chemistry Utility</h1>
+        </header>
         <main id="main">
-            <div id="balancing">
+            <div id="element-lookup" class="main-groups">
+                <h2>Element Information Lookup</h2>
+            </div>
+            <div id="balancing" class="main-groups">
                 <h2>Chemical Equation Balancer</h2>
 
             </div>
-            <div id="mass-calc">
+            <div id="mass-calc" class="main-groups">
                 <h2>Molar Mass Calculation (uses 2 decimal place values)</h2>
             </div>
-            <div id="stoichiometry">
+            <div id="stoichiometry" class="main-groups">
                 <h2>Stoichiometry</h2>
             </div>
         </main>
