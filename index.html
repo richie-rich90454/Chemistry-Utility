@@ -7,61 +7,122 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
         <style>
-            @font-face{
-                font-family: "Noto Sans";
-                src: url("NotoSans-VariableFont_wdth,wght.ttf") format("truetype");
-                font-weight: 300;
-                font-style: normal;
-                font-display: swap;
+            :root{
+                --primary-blue: #1C94E9;
+                --primary-red: #DE0000;
+                --dark-blue: #28465C;
+                --light-gray: #EBEBEB;
+                --text-dark: #000;
             }
             body{
-                font-family: "Noto Sans";
+                font-family: "Noto Sans", sans-serif;
                 margin: 0;
                 padding: 0;
-                background-color: #EBEBEB;
+                background-color: var(--light-gray);
+                color: var(--text-dark);
             }
             h1{
-                font-family: "Noto Sans";
+                font-family: "Noto Sans", sans-serif;
                 color: #FFF;
-                font-size: 4rem;
-                background: linear-gradient(30deg, #DE0000, #1C94E9);
+                font-size: 3.5rem;
+                background: linear-gradient(30deg, var(--primary-red), var(--primary-blue));
                 margin: 0;
+                padding: 2rem 1rem;
                 text-align: center;
-                padding: 0;
             }
             h2{
-                font-size: 2rem;
-                margin: 0;
-                text-align: center;
+                font-family: "Noto Sans", sans-serif;
+                font-size: 1.75rem;
+                margin: 0 0 1.5rem 0;
+                color: var(--dark-blue);
             }
             #footer{
-                font-family: "Noto Sans";
+                font-family: "Noto Sans", sans-serif;
                 text-align: center;
-                background-color: #28465C;
+                background-color: var(--dark-blue);
                 color: #FFF;
-                padding: .3rem;
-                font-size: 1rem;
-                max-width: 100%;
-                margin: 0;
+                padding: 1.5rem;
+                margin-top: 2rem;
             }
             #main{
+                font-family: "Noto Sans", sans-serif;
                 background-color: #FFF;
-                margin: 0;
-                
-            }
-            div{
-                margin: 0;
-            }
-            a{
-                color: #1C94E9;
+                max-width: 99%;
+                margin: 2rem auto;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             }
             .main-groups{
-                border-top: 2px solid #000;
-                margin: .5rem;
+                font-family: "Noto Sans", sans-serif;
+                padding: 2rem 0;
+                margin: 0 0 2rem 0;
+                border-top: 2px solid var(--text-dark);
             }
             #stoichiometry{
-                border-bottom: 2px solid #000;
+                font-family: "Noto Sans", sans-serif;
+                border-bottom: 2px solid var(--text-dark);
+            }
+            input[type="text"]{
+                font-family: "Noto Sans", sans-serif;
+                width: 100%;
+                max-width: 400px;
+                padding: 0.8rem;
+                border: 2px solid #ddd;
+                border-radius: 4px;
+                margin: 0.5rem 0;
+                font-size: 1rem;
+            }
+            button{
+                font-family: "Noto Sans", sans-serif;
+                background-color: var(--primary-blue);
+                color: #FFF;
+                padding: 0.8rem 1.5rem;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: all 0.3s ease-in-out;
+            }
+            button:hover{
+                background-color: var(--dark-blue);
+                transform: scale(1.05);
+            }
+            #element-info{
+                font-family: "EB Garamond", serif;
+                margin-top: 1.5rem;
+                padding: 1.5rem;
+                background-color: #FFF;
+                border-radius: 6px;
+                border: 1px solid var(--text-dark);
+                font-size: 1.2rem;
+            }
+            #element-info p{
+                margin: 0.8rem 0;
+                line-height: 1.6;
+            }
+            a{
+                font-family: "Noto Sans", sans-serif;
+                color: var(--primary-blue);
+                transition: opacity 0.3s ease;
+            }
+            a:hover{
+                opacity: 0.8;
+            }
+            @media (max-width: 768px){
+                h1{
+                    font-size: 2rem;
+                    padding: 1.5rem 1rem;
+                }
+                #main{
+                    margin: 1rem;
+                    padding: 1rem;
+                }
+                .main-groups{
+                    padding: 1.5rem 0;
+                }
             }
         </style>
     </head>
@@ -72,14 +133,13 @@
         <main id="main">
             <div id="element-lookup" class="main-groups">
                 <h2>Element Information Lookup</h2>
-                <p>Entere the element symbol or name of the element you want to look up: </p>
-                <input type="text" id="element-input">
+                <p>Enter the element symbol or name of the element you want to look up: </p>
+                <input type="text" id="element-input" placeholder="Enter here">
                 <button id="lookup-button">Lookup Element</button>
                 <div id="element-info"></div>
             </div>
             <div id="balancing" class="main-groups">
                 <h2>Chemical Equation Balancer</h2>
-
             </div>
             <div id="mass-calc" class="main-groups">
                 <h2>Molar Mass Calculation (uses 2 decimal place values)</h2>
