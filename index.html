@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <title>Balance Equations</title>
+    <title>Chemistry Utility</title>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,8 +67,7 @@
             }
             input[type="text"]{
                 font-family: "Noto Sans", sans-serif;
-                width: 100%;
-                max-width: 400px;
+                max-width: 99%;
                 padding: 0.8rem;
                 border: 2px solid #ddd;
                 border-radius: 4px;
@@ -90,7 +89,7 @@
                 background-color: var(--dark-blue);
                 transform: scale(1.05);
             }
-            #element-info, #mass-result{
+            #element-info, #mass-result, #balance-result{
                 font-family: "EB Garamond", serif;
                 margin-top: 1.5rem;
                 padding: 1.5rem;
@@ -147,6 +146,10 @@
             </div>
             <div id="balancing" class="main-groups">
                 <h2>Chemical Equation Balancer</h2>
+                <p>Enter the chemical equation: </p>
+                <input type="text" id="equation-input" placeholder="E.g., H2+O2->H2O">
+                <button id="balance-button">Balance Equation</button>
+                <div id="balance-result"></div>
             </div>
             <div id="stoichiometry" class="main-groups">
                 <h2>Stoichiometry</h2>
