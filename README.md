@@ -1,2 +1,2 @@
-# chemical-equation-balancing
-A program designed to balance chemical equations made with HTML, CSS, and JavaScript.
+# Chemistry Utility
+A Chemistry Utility that performs element information lookups, molar mass calculations, chemical equation balancing, and stiochiometric calculations that is made with HTML, CSS, and JS with Node.js and utilizing fastify to serve the webpage.
