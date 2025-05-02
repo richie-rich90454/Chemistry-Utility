@@ -25,6 +25,36 @@ document.addEventListener("DOMContentLoaded", function (){
                 document.getElementById("element-info").innerHTML="<p>Element not found</p>";
             }
         });
+        document.getElementById("calculate-mass-button").addEventListener("click", function(){
+            let formula=document.getElementById("formula-input").value.trim();
+            if (formula==""){
+                document.getElementById("mass-result").innerHTML="<p>Please enter a chemical formula</p>";
+                return;
+            }
+            let regex=/([A-Z][a-z]?)(\d*)/g;
+            let match;
+            let totalMass=0;
+            let valid=true;
+            while ((match=regex.exec(formula))!==null){
+                let symbol=match[1];
+                let count=match[2]?parseInt(match[2]):1;
+                let element=elements.find(el=>el.symbol==symbol);
+                if (element){
+                    totalMass+=element.atomicMass*count;
+                }
+                else{
+                    valid=false;
+                    document.getElementById("mass-result").innerHTML=`<p>Element ${symbol} not found.</p>`;
+                    break;
+                }
+            }
+            if (valid&&regex.lastIndex==formula.length){
+                document.getElementById("mass-result").innerHTML=`<p>Molar Mass: ${totalMass.toFixed(2)} g/mol</p>`;
+            }
+            else if (valid){
+                document.getElementById("mass-result").innerHTML="<p>Invalid formula.</p>";
+            }
+        });
     })
     .catch(err=>{
         console.error("Error fetching data:", err);
