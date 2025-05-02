@@ -90,7 +90,7 @@
                 background-color: var(--dark-blue);
                 transform: scale(1.05);
             }
-            #element-info{
+            #element-info, #mass-result{
                 font-family: "EB Garamond", serif;
                 margin-top: 1.5rem;
                 padding: 1.5rem;
@@ -138,15 +138,15 @@
                 <button id="lookup-button">Lookup Element</button>
                 <div id="element-info"></div>
             </div>
-            <div id="balancing" class="main-groups">
-                <h2>Chemical Equation Balancer</h2>
-            </div>
             <div id="mass-calc" class="main-groups">
                 <h2>Molar Mass Calculation</h2>
                 <p>Enter the formula here: </p>
                 <input type="text" id="formula-input" placeholder="E.g., CH4">
                 <button id="calculate-mass-button">Calculate Molar Mass</button>
                 <div id="mass-result"></div>
+            </div>
+            <div id="balancing" class="main-groups">
+                <h2>Chemical Equation Balancer</h2>
             </div>
             <div id="stoichiometry" class="main-groups">
                 <h2>Stoichiometry</h2>

@@ -51,13 +51,13 @@ document.addEventListener("DOMContentLoaded", function(){
                         throw new Error("Element not found: "+symbol);
                     }
                 }
-                else if (formula[i]=='('){
+                else if (formula[i]=="("){
                     stack.push(0);
                     i++;
                 }
-                else if (formula[i]==')'){
+                else if (formula[i]==")"){
                     if (stack.length<2){
-                        throw new Error("Unmatched ')'");
+                        throw new Error("Unmatched \")\"");
                     }
                     let subgroupMass=stack.pop();
                     let [multiplier, numIndex]=parseNumber(formula, i+1);
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 }
             }
             if (stack.length>1){
-                throw new Error("Unmatched '('");
+                throw new Error("Unmatched \"(\"");
             }
             return stack[0];
         }
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 el.symbol.toLowerCase()==input||el.name.toLowerCase()==input
             );
             if (element){
-                let info=`<p><strong>Symbol:</strong> ${element.symbol}</p><p><strong>Name:</strong> ${element.name}</p><p><strong>Atomic Mass:</strong> ${element.atomicMass} u</p><p><strong>Atomic Number:</strong> ${element.atomicNumber}</p><p><strong>Electronegativity:</strong> ${element.electronegativity!==null?element.electronegativity:'N/A'}</p><p><strong>Electron Affinity:</strong> ${element.electronAffinity!==null?element.electronAffinity:'N/A'} kJ/mol</p><p><strong>Atomic Radius:</strong> ${element.atomicRadius!==null?element.atomicRadius:'N/A'} pm</p><p><strong>Ionization Energy:</strong> ${element.ionizationEnergy!==null?element.ionizationEnergy:'N/A'} kJ/mol</p><p><strong>Valence Electrons:</strong> ${element.valenceElectrons}</p><p><strong>Total Electrons:</strong> ${element.totalElectrons}</p><p><strong>Group:</strong> ${element.group}</p><p><strong>Period:</strong> ${element.period}</p><p><strong>Type:</strong> ${element.type}</p}`;
+                let info=`<p><strong>Symbol:</strong> ${element.symbol}</p><p><strong>Name:</strong> ${element.name}</p><p><strong>Atomic Mass:</strong> ${element.atomicMass} u</p><p><strong>Atomic Number:</strong> ${element.atomicNumber}</p><p><strong>Electronegativity:</strong> ${element.electronegativity!==null?element.electronegativity:"N/A"}</p><p><strong>Electron Affinity:</strong> ${element.electronAffinity!==null?element.electronAffinity:"N/A"} kJ/mol</p><p><strong>Atomic Radius:</strong> ${element.atomicRadius!==null?element.atomicRadius:"N/A"} pm</p><p><strong>Ionization Energy:</strong> ${element.ionizationEnergy!==null?element.ionizationEnergy:"N/A"} kJ/mol</p><p><strong>Valence Electrons:</strong> ${element.valenceElectrons}</p><p><strong>Total Electrons:</strong> ${element.totalElectrons}</p><p><strong>Group:</strong> ${element.group}</p><p><strong>Period:</strong> ${element.period}</p><p><strong>Type:</strong> ${element.type}</p}`;
                 document.getElementById("element-info").innerHTML=info;
             }
             else{
