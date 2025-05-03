@@ -240,6 +240,128 @@ document.addEventListener("DOMContentLoaded", function(){
                 document.getElementById("balance-result").innerHTML=`<p>${error.message}</p>`;
             }
         });
+        function parseBalancedEquation(equation){
+            equation=equation.replace(/\s+/g, "");
+            let parts=equation.split("->");
+            if (parts.length!==2){
+                throw new Error("Invalid equation format: missing \"->\"");
+            }
+            let reactants=parts[0].split("+").map(parseTerm);
+            let products=parts[1].split("+").map(parseTerm);
+            return {reactants, products};
+        }
+        function parseTerm(term){
+            let match=term.match(/^(\d+)?(.+)$/);
+            if (!match){
+                throw new Error("Invalid term: "+term);
+            }
+            let coeff=match[1]?parseInt(match[1]):1;
+            let formula=match[2];
+            return {formula, coeff};
+        }
+        document.getElementById("calculation-type").addEventListener("change", function(){
+            let type=this.value;
+            let equation=document.getElementById("stoich-equation-input").value.trim();
+            if (equation==""){
+                document.getElementById("stoich-inputs").innerHTML="<p>Please enter a balanced chemical equation.</p>";
+                return;
+            }
+            try{
+                let parsed=parseBalancedEquation(equation);
+                let inputsDiv=document.getElementById("stoich-inputs");
+                inputsDiv.innerHTML="";
+                if (type=="product-from-reactant"){
+                    let reactantSelect=`<select id="reactant-select">${parsed.reactants.map(r=>`<option value="${r.formula}">${r.formula}</option>`).join("")}</select>`;
+                    let molesInput=`<input type="number" id="reactant-moles" placeholder="Moles of reactant" min="0" step="any">`;
+                    let productSelect=`<select id="product-select">${parsed.products.map(p=>`<option value="${p.formula}">${p.formula}</option>`).join("")}</select>`;
+                    inputsDiv.innerHTML=`<p>Select reactant: ${reactantSelect}</p><p>Enter moles: ${molesInput}</p><p>Select product: ${productSelect}</p>`;
+                }
+                else if (type=="reactant-from-product"){
+                    let productSelect=`<select id="product-select">${parsed.products.map(p=>`<option value="${p.formula}">${p.formula}</option>`).join("")}</select>`;
+                    let molesInput=`<input type="number" id="product-moles" placeholder="Moles of product" min="0" step="any">`;
+                    let reactantSelect=`<select id="reactant-select">${parsed.reactants.map(r=>`<option value="${r.formula}">${r.formula}</option>`).join("")}</select>`;
+                    inputsDiv.innerHTML=`<p>Select product: ${productSelect}</p><p>Enter moles: ${molesInput}</p><p>Select reactant: ${reactantSelect}</p>`;
+                }
+                else if (type=="limiting-reactant"){
+                    let reactantInputs=parsed.reactants.map(r=>`<p>${r.formula}: <input type="number" id="moles-${r.formula}" placeholder="Moles of ${r.formula}" min="0" step="any"></p>`).join("");
+                    let productSelect=`<select id="product-select">${parsed.products.map(p=>`<option value="${p.formula}">${p.formula}</option>`).join("")}</select>`;
+                    inputsDiv.innerHTML=reactantInputs+`<p>Select product to calculate: ${productSelect}</p>`;
+                }
+            }
+            catch (error){
+                document.getElementById("stoich-inputs").innerHTML=`<p>Error parsing equation: ${error.message}</p>`;
+            }
+        });
+        document.getElementById("calculate-stoich-button").addEventListener("click", function(){
+            let type=document.getElementById("calculation-type").value;
+            let equation=document.getElementById("stoich-equation-input").value.trim();
+            if (equation==""){
+                document.getElementById("stoich-result").innerHTML="<p>Please enter a balanced chemical equation.</p>";
+                return;
+            }
+            try{
+                let parsed=parseBalancedEquation(equation);
+                if (type=="product-from-reactant"){
+                    let reactantFormula=document.getElementById("reactant-select").value;
+                    let molesReactant=parseFloat(document.getElementById("reactant-moles").value);
+                    let productFormula=document.getElementById("product-select").value;
+                    if (isNaN(molesReactant)||molesReactant<=0){
+                        throw new Error("Invalid moles input");
+                    }
+                    let reactant=parsed.reactants.find(r=>r.formula==reactantFormula);
+                    let product=parsed.products.find(p=>p.formula==productFormula);
+                    if (!reactant||!product){
+                        throw new Error("Selected compound not found");
+                    }
+                    let molesProduct=(molesReactant/reactant.coeff)*product.coeff;
+                    document.getElementById("stoich-result").innerHTML=`<p>Moles of ${productFormula}: ${molesProduct.toFixed(2)}</p>`;
+                }
+                else if (type=="reactant-from-product"){
+                    let productFormula=document.getElementById("product-select").value;
+                    let molesProduct=parseFloat(document.getElementById("product-moles").value);
+                    let reactantFormula=document.getElementById("reactant-select").value;
+                    if (isNaN(molesProduct)||molesProduct<=0){
+                        throw new Error("Invalid moles input");
+                    }
+                    let product=parsed.products.find(p=>p.formula==productFormula);
+                    let reactant=parsed.reactants.find(r=>r.formula==reactantFormula);
+                    if (!product||!reactant){
+                        throw new Error("Selected compound not found");
+                    }
+                    let molesReactant=(molesProduct/product.coeff)*reactant.coeff;
+                    document.getElementById("stoich-result").innerHTML=`<p>Moles of ${reactantFormula}: ${molesReactant.toFixed(2)}</p>`;
+                }
+                else if (type=="limiting-reactant"){
+                    let reactantMoles={};
+                    for (let r of parsed.reactants){
+                        let moles=parseFloat(document.getElementById(`moles-${r.formula}`).value);
+                        if (isNaN(moles)||moles<=0){
+                            throw new Error(`Invalid moles for ${r.formula}`);
+                        }
+                        reactantMoles[r.formula]=moles;
+                    }
+                    let productFormula=document.getElementById("product-select").value;
+                    let product=parsed.products.find(p=>p.formula==productFormula);
+                    if (!product){
+                        throw new Error("Selected product not found");
+                    }
+                    let minRatio=Infinity;
+                    let limitingReactant=null;
+                    for (let r of parsed.reactants){
+                        let ratio=reactantMoles[r.formula]/r.coeff;
+                        if (ratio<minRatio){
+                            minRatio=ratio;
+                            limitingReactant=r.formula;
+                        }
+                    }
+                    let molesProduct=minRatio*product.coeff;
+                    document.getElementById("stoich-result").innerHTML=`<p>Limiting reactant: ${limitingReactant}</p><p>Moles of ${productFormula}: ${molesProduct.toFixed(2)}</p>`;
+                }
+            }
+            catch (error){
+                document.getElementById("stoich-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        });
     })
     .catch(err=>{
         console.error("Error fetching data:", err);

@@ -65,11 +65,11 @@
                 font-family: "Noto Sans", sans-serif;
                 border-bottom: 2px solid var(--text-dark);
             }
-            input[type="text"]{
+            input[type="text"], input[type="number"]{
                 font-family: "Noto Sans", sans-serif;
                 max-width: 99%;
                 padding: .8rem;
-                border: 2px solid #ddd;
+                border: 2px solid #DDD;
                 border-radius: 4px;
                 margin: .5rem 0;
                 font-size: 1rem;
@@ -89,7 +89,7 @@
                 background-color: var(--dark-blue);
                 transform: scale(1.05);
             }
-            #element-info, #mass-result, #balance-result{
+            #element-info, #mass-result, #balance-result, #stoich-results{
                 font-family: "EB Garamond", serif;
                 margin-top: 1.5rem;
                 padding: 1.5rem;
@@ -109,6 +109,14 @@
             }
             a:hover{
                 opacity: .8;
+            }
+            select{
+                font-family: "Noto Sans", sans-serif;
+                padding: .8rem;
+                border: 2px solid #DDD;
+                border-radius: 4px;
+                margin: .5rem 0;
+                font-size: 1rem;
             }
             @media (max-width: 768px){
                 h1{
@@ -153,6 +161,17 @@
             </div>
             <div id="stoichiometry" class="main-groups">
                 <h2>Stoichiometry</h2>
+                <p>Enter the balanced chemical equation:</p>
+                <input type="text" id="stoich-equation-input" placeholder="E.g., 2H2+O2->2H2O">
+                <p>Select calculation type:</p>
+                <select id="calculation-type">
+                    <option value="product-from-reactant">Product from Reactant</option>
+                    <option value="reactant-from-product">Reactant from Product</option>
+                    <option value="limiting-reactant">Limiting Reactant</option>
+                </select>
+                <div id="stoich-inputs"></div>
+                <button id="calculate-stoich-button">Calculate</button>
+                <div id="stoich-result"></div>
             </div>
         </main>
         <footer id="footer">
