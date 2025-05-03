@@ -85,7 +85,7 @@ fastify.setErrorHandler((error, request, reply)=>{
 });
 let start=async ()=>{
     try{
-        await fastify.listen({ port: PORT });
+        await fastify.listen({ port: PORT, host: '::' });
         console.log(`Server running at http://localhost:${PORT}`);
         console.log(`Secure data path: ${randomDirPath}`);
     }
