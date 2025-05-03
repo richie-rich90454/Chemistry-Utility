@@ -1,5 +1,4 @@
 # Chemistry Utility
-[![npm version](https://img.shields.io/npm/v/chemistry-utility)](https://www.npmjs.com/package/chemistry-utility)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 A web‑based **Chemistry Utility** that performs element information lookups, molar mass calculations, chemical equation balancing, and stoichiometric analysis. Built with **HTML**, **CSS** (inline), **JavaScript**, and **Node.js**, and served via **Fastify** for high performance and secure routing.
 ---
