@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             let reactants=parts[0].split("+");
             let products=parts[1].split("+");
-            return {reactants, products};
+            return{reactants, products};
         }
         function isBalanced(coeff, reactantsParsed, productsParsed, elements){
             let leftCounts={};
@@ -135,14 +135,14 @@ document.addEventListener("DOMContentLoaded", function(){
                 leftCounts[element]=0;
                 rightCounts[element]=0;
             }
-            for (let i=0; i<reactantsParsed.length; i++){
+            for (let i=0;i<reactantsParsed.length;i++){
                 let compound=reactantsParsed[i];
                 let c=coeff[i];
                 for (let element in compound){
                     leftCounts[element]+=compound[element]*c;
                 }
             }
-            for (let i=0; i<productsParsed.length; i++){
+            for (let i=0;i<productsParsed.length;i++){
                 let compound=productsParsed[i];
                 let c=coeff[reactantsParsed.length+i];
                 for (let element in compound){
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function(){
             return true;
         }
         function balanceEquation(equation){
-            let {reactants, products}=parseEquation(equation);
+            let{reactants, products}=parseEquation(equation);
             let allCompounds=[...reactants, ...products];
             let parsedCompounds=allCompounds.map(parseFormula);
             let elements=new Set();
@@ -173,13 +173,13 @@ document.addEventListener("DOMContentLoaded", function(){
             while (true){
                 if (isBalanced(coeff, parsedCompounds.slice(0, reactants.length), parsedCompounds.slice(reactants.length), elements)){
                     let balancedEquation="";
-                    for (let i=0; i<reactants.length; i++){
+                    for (let i=0;i<reactants.length;i++){
                         balancedEquation+=coeff[i]==1?"":coeff[i];
                         balancedEquation+=allCompounds[i]+" + ";
                     }
                     balancedEquation=balancedEquation.slice(0,-3);
                     balancedEquation+=" -> ";
-                    for (let i=reactants.length; i<m; i++){
+                    for (let i=reactants.length;i<m;i++){
                         balancedEquation+=coeff[i]==1?"":coeff[i];
                         balancedEquation+=allCompounds[i]+" + ";
                     }
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     throw new Error("No solution found within coefficient limit of "+maxCoeff);
                 }
                 coeff[i]++;
-                for (let j=i+1; j<m; j++){
+                for (let j=i+1;j<m;j++){
                     coeff[j]=1;
                 }
             }
@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             let reactants=parts[0].split("+").map(parseTerm);
             let products=parts[1].split("+").map(parseTerm);
-            return {reactants, products};
+            return{reactants, products};
         }
         function parseTerm(term){
             let match=term.match(/^(\d+)?(.+)$/);
@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             let coeff=match[1]?parseInt(match[1]):1;
             let formula=match[2];
-            return {formula, coeff};
+            return{formula, coeff};
         }
         document.getElementById("calculation-type").addEventListener("change", function(){
             let type=this.value;
@@ -362,6 +362,101 @@ document.addEventListener("DOMContentLoaded", function(){
                 document.getElementById("stoich-result").innerHTML=`<p>Error: ${error.message}</p>`;
             }
         });
+        document.getElementById("calculate-dilution").addEventListener("click", function(){
+            try{
+                let solveFor=document.getElementById("dilution-solve-for").value;
+                let M1=parseFloat(document.getElementById("dilution-M1").value);
+                let V1=parseFloat(document.getElementById("dilution-V1").value);
+                let M2=parseFloat(document.getElementById("dilution-M2").value);
+                let V2=parseFloat(document.getElementById("dilution-V2").value);
+                let result, formula;
+                switch(solveFor){
+                    case "M1":
+                        validateInputs([V1, M2, V2]);
+                        result=(M2*V2)/V1;
+                        formula="M₁=(M₂ x V₂)/V₁";
+                        break;
+                    case "V1":
+                        validateInputs([M1, M2, V2]);
+                        result=(M2*V2)/M1;
+                        formula="V₁=(M₂ x V₂)/M₁";
+                        break;
+                    case "M2":
+                        validateInputs([M1, V1, V2]);
+                        result=(M1*V1)/V2;
+                        formula="M₂=(M₁ x V₁)/V₂";
+                        break;
+                    case "V2":
+                        validateInputs([M1, V1, M2]);
+                        result=(M1*V1)/M2;
+                        formula="V₂=(M₁ x V₁)/M₂";
+                        break;
+                    default:
+                        throw new Error("Invalid calculation type");
+                }
+                document.getElementById("dilution-result").innerHTML=`<p>${formula}</p><p>Result: ${result.toFixed(4)} ${solveFor.startsWith("M")?"M":"L"}</p>`;
+            }
+            catch (error){
+                document.getElementById("dilution-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        });
+        document.getElementById("calculate-mass-percent").addEventListener("click", function(){
+            try{
+                let solute=parseFloat(document.getElementById("mass-solute").value);
+                let solution=parseFloat(document.getElementById("mass-solution").value);
+                let unit=document.getElementById("concentration-unit").value;
+                validateInputs([solute, solution]);
+                if (solution==0) throw new Error("Solution mass cannot be zero");
+                let ratio=solute/solution;
+                let result, unitText;
+                switch(unit){
+                    case "percent":
+                        result=ratio*100;
+                        unitText="%";
+                        break;
+                    case "ppm":
+                        result=ratio*1e6;
+                        unitText="ppm";
+                        break;
+                    case "ppb":
+                        result=ratio*1e9;
+                        unitText="ppb";
+                        break;
+                    default:
+                        throw new Error("Invalid unit");
+                }
+                document.getElementById("mass-percent-result").innerHTML=`<p>Concentration: ${result.toFixed(4)} ${unitText}</p>`;
+            }
+            catch (error){
+                document.getElementById("mass-percent-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        });
+        document.getElementById("calculate-mixing").addEventListener("click", function(){
+            try{
+                let C1=parseFloat(document.getElementById("mix-C1").value);
+                let V1=parseFloat(document.getElementById("mix-V1").value);
+                let C2=parseFloat(document.getElementById("mix-C2").value);
+                let V2=parseFloat(document.getElementById("mix-V2").value);
+                validateInputs([C1, V1, C2, V2]);
+                if (V1+V2==0) throw new Error("Total volume cannot be zero");
+                let totalMoles=(C1*V1)+(C2*V2);
+                let totalVolume=V1+V2;
+                let C_final=totalMoles/totalVolume;
+                document.getElementById("mixing-result").innerHTML=`
+                    <p>Final Concentration: ${C_final.toFixed(4)} M</p>
+                    <p>Total Volume: ${totalVolume.toFixed(4)} L</p>
+                `;
+            }
+            catch (error){
+                document.getElementById("mixing-result").innerHTML=
+                    `<p>Error: ${error.message}</p>`;
+            }
+        });
+        function validateInputs(inputs){
+            if (inputs.some(isNaN)){
+                throw new Error("Please fill all required fields with valid numbers");
+            }
+        }
     })
     .catch(err=>{
         console.error("Error fetching data:", err);
