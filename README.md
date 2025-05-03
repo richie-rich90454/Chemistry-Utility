@@ -1,6 +1,6 @@
 # Chemistry Utility
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-A web‑based **Chemistry Utility** that performs element information lookups, molar mass calculations, chemical equation balancing, and stoichiometric analysis. Built with **HTML**, **CSS** (inline), **JavaScript**, and **Node.js**, and served via **Fastify** for high performance and secure routing.
+- [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+- A web‑based **Chemistry Utility** that performs element information lookups, molar mass calculations, chemical equation balancing, and stoichiometric analysis. Built with **HTML**, **CSS** (inline), **JavaScript**, and **Node.js**, and served via **Fastify** for high performance and secure routing.
 ---
 ## Table of Contents
 * [Features](#features)
