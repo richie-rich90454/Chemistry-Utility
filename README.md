@@ -16,7 +16,7 @@ A web-based **Chemistry Utility** that performs element information lookups, mol
 ## Installation
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/chemistry-utility.git
+   git clone https://github.com/richie-rich90454/Chemistry-Utility.git
    cd chemistry-utility
    ```
 2. **Install dependencies**
@@ -55,7 +55,7 @@ chemistry-utility/
 ## Customization
 * **Styling**: Modify CSS variables in the `<style>` block of `index.html` or replace with an external stylesheet.
 * **Server**: Edit `server.js` (or the Fastify setup) to change port, add middleware, or extend endpoints.
-* **Data**: Update `data/ptable.json` to add/remove elements or adjust properties.
+* **Data**: Update `ptable.json` to add/remove elements or adjust properties.
 ## License
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 ---
