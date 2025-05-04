@@ -1,8 +1,8 @@
 let Fastify=require("fastify");
 let path=require("path");
 let fs=require("fs");
-let{ v4: uuidv4 }=require("uuid");
-let fastify=Fastify({ logger: false });
+let {v4: uuidv4}=require("uuid");
+let fastify=Fastify({logger: false});
 let PORT=6005;
 let randomDirName=uuidv4();
 let randomDirPath=path.join(__dirname, randomDirName);
@@ -22,7 +22,7 @@ fastify.addHook("onRequest", async (request, reply)=>{
     }
 });
 try{
-    fs.mkdirSync(randomDirPath,{ recursive: true, mode: 0o755 });
+    fs.mkdirSync(randomDirPath, {recursive: true, mode: 0o755});
     let ptableSource=path.join(__dirname, "ptable.json");
     let ptableDest=path.join(randomDirPath, "ptable.json");
     if (!fs.existsSync(ptableSource)){
@@ -81,11 +81,11 @@ fastify.setNotFoundHandler((request, reply)=>{
 });
 fastify.setErrorHandler((error, request, reply)=>{
     console.error("Unexpected error:", error.stack||error);
-    reply.code(500).send({ error: "Internal Server Error" });
+    reply.code(500).send({error: "Internal Server Error"});
 });
 let start=async ()=>{
     try{
-        await fastify.listen({ port: PORT, host: '::' });
+        await fastify.listen({port: PORT, host: "::"});
         console.log(`Server running at http://localhost:${PORT}`);
         console.log(`Secure data path: ${randomDirPath}`);
     }
@@ -110,7 +110,7 @@ let gracefulShutdown=async (signal)=>{
     try{
         await fastify.close();
         if (fs.existsSync(randomDirPath)){
-            fs.rmSync(randomDirPath,{ recursive: true, force: true });
+            fs.rmSync(randomDirPath, {recursive: true, force: true});
             console.log(`Deleted temporary folder: ${randomDirPath}`);
         }
         clearTimeout(shutdownTimeout);

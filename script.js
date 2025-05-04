@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             return stack[0];
         }
-        function parseFormula(formula){
+        function formatFormula(formula){
             let stack=[{}];
             let i=0;
             while (i<formula.length){
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function(){
             let products=parts[1].split("+");
             return{reactants, products};
         }
-        function isBalanced(coeff, reactantsParsed, productsParsed, elements){
+        function isEquationBalanced(coefficient, reactantsParsed, productsParsed, elements){
             let leftCounts={};
             let rightCounts={};
             for (let element of elements){
@@ -137,14 +137,14 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             for (let i=0;i<reactantsParsed.length;i++){
                 let compound=reactantsParsed[i];
-                let c=coeff[i];
+                let c=coefficient[i];
                 for (let element in compound){
                     leftCounts[element]+=compound[element]*c;
                 }
             }
             for (let i=0;i<productsParsed.length;i++){
                 let compound=productsParsed[i];
-                let c=coeff[reactantsParsed.length+i];
+                let c=coefficient[reactantsParsed.length+i];
                 for (let element in compound){
                     rightCounts[element]+=compound[element]*c;
                 }
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function(){
         function balanceEquation(equation){
             let{reactants, products}=parseEquation(equation);
             let allCompounds=[...reactants, ...products];
-            let parsedCompounds=allCompounds.map(parseFormula);
+            let parsedCompounds=allCompounds.map(formatFormula);
             let elements=new Set();
             for (let compound of parsedCompounds){
                 for (let element in compound){
@@ -168,42 +168,40 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             elements=Array.from(elements);
             let m=allCompounds.length;
-            let maxCoeff=10;
-            let coeff=new Array(m).fill(1);
+            let maxcoefficient=10;
+            let coefficient=new Array(m).fill(1);
             while (true){
-                if (isBalanced(coeff, parsedCompounds.slice(0, reactants.length), parsedCompounds.slice(reactants.length), elements)){
+                if (isEquationBalanced(coefficient, parsedCompounds.slice(0, reactants.length), parsedCompounds.slice(reactants.length), elements)){
                     let balancedEquation="";
                     for (let i=0;i<reactants.length;i++){
-                        balancedEquation+=coeff[i]==1?"":coeff[i];
+                        balancedEquation+=coefficient[i]==1?"":coefficient[i];
                         balancedEquation+=allCompounds[i]+" + ";
                     }
                     balancedEquation=balancedEquation.slice(0,-3);
                     balancedEquation+=" -> ";
                     for (let i=reactants.length;i<m;i++){
-                        balancedEquation+=coeff[i]==1?"":coeff[i];
+                        balancedEquation+=coefficient[i]==1?"":coefficient[i];
                         balancedEquation+=allCompounds[i]+" + ";
                     }
                     balancedEquation=balancedEquation.slice(0,-3);
                     return balancedEquation;
                 }
                 let i=m-1;
-                while (i>=0&&coeff[i]==maxCoeff){
+                while (i>=0&&coefficient[i]==maxcoefficient){
                     i--;
                 }
                 if (i<0){
-                    throw new Error("No solution found within coefficient limit of "+maxCoeff);
+                    throw new Error("No solution found within coefficienticient limit of "+maxcoefficient);
                 }
-                coeff[i]++;
+                coefficient[i]++;
                 for (let j=i+1;j<m;j++){
-                    coeff[j]=1;
+                    coefficient[j]=1;
                 }
             }
         }
-        document.getElementById("lookup-button").addEventListener("click", function(){
+        function lookUpElement(){
             let input=document.getElementById("element-input").value.trim().toLowerCase();
-            let element=elements.find(el=>
-                el.symbol.toLowerCase()==input||el.name.toLowerCase()==input
-            );
+            let element=elements.find(el=>el.symbol.toLowerCase()==input||el.name.toLowerCase()==input);
             if (element){
                 let info=`<p><strong>Symbol:</strong> ${element.symbol}</p><p><strong>Name:</strong> ${element.name}</p><p><strong>Atomic Mass:</strong> ${element.atomicMass} u</p><p><strong>Atomic Number:</strong> ${element.atomicNumber}</p><p><strong>Electronegativity:</strong> ${element.electronegativity!==null?element.electronegativity:"N/A"}</p><p><strong>Electron Affinity:</strong> ${element.electronAffinity!==null?element.electronAffinity:"N/A"} kJ/mol</p><p><strong>Atomic Radius:</strong> ${element.atomicRadius!==null?element.atomicRadius:"N/A"} pm</p><p><strong>Ionization Energy:</strong> ${element.ionizationEnergy!==null?element.ionizationEnergy:"N/A"} kJ/mol</p><p><strong>Valence Electrons:</strong> ${element.valenceElectrons}</p><p><strong>Total Electrons:</strong> ${element.totalElectrons}</p><p><strong>Group:</strong> ${element.group}</p><p><strong>Period:</strong> ${element.period}</p><p><strong>Type:</strong> ${element.type}</p>`;
                 document.getElementById("element-info").innerHTML=info;
@@ -211,8 +209,8 @@ document.addEventListener("DOMContentLoaded", function(){
             else{
                 document.getElementById("element-info").innerHTML="<p>Element not found</p>";
             }
-        });
-        document.getElementById("calculate-mass-button").addEventListener("click", function(){
+        }
+        function calculateMass(){
             let formula=document.getElementById("formula-input").value.trim();
             if (formula==""){
                 document.getElementById("mass-result").innerHTML="<p>Please enter a chemical formula</p>";
@@ -225,8 +223,8 @@ document.addEventListener("DOMContentLoaded", function(){
             catch (error){
                 document.getElementById("mass-result").innerHTML=`<p>${error.message}</p>`;
             }
-        });
-        document.getElementById("balance-button").addEventListener("click", function(){
+        }
+        function balanceEquations(){
             let equation=document.getElementById("equation-input").value.trim();
             if (equation==""){
                 document.getElementById("balance-result").innerHTML="<p>Please enter a chemical equation</p>";
@@ -239,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function(){
             catch (error){
                 document.getElementById("balance-result").innerHTML=`<p>${error.message}</p>`;
             }
-        });
+        }
         function parseBalancedEquation(equation){
             equation=equation.replace(/\s+/g, "");
             let parts=equation.split("->");
@@ -255,11 +253,11 @@ document.addEventListener("DOMContentLoaded", function(){
             if (!match){
                 throw new Error("Invalid term: "+term);
             }
-            let coeff=match[1]?parseInt(match[1]):1;
+            let coefficient=match[1]?parseInt(match[1]):1;
             let formula=match[2];
-            return{formula, coeff};
+            return{formula, coefficient};
         }
-        document.getElementById("calculation-type").addEventListener("change", function(){
+        function getCalculationType(){
             let type=this.value;
             let equation=document.getElementById("stoich-equation-input").value.trim();
             if (equation==""){
@@ -291,8 +289,8 @@ document.addEventListener("DOMContentLoaded", function(){
             catch (error){
                 document.getElementById("stoich-inputs").innerHTML=`<p>Error parsing equation: ${error.message}</p>`;
             }
-        });
-        document.getElementById("calculate-stoich-button").addEventListener("click", function(){
+        }
+        function calculateStoichiometry(){
             let type=document.getElementById("calculation-type").value;
             let equation=document.getElementById("stoich-equation-input").value.trim();
             if (equation==""){
@@ -313,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     if (!reactant||!product){
                         throw new Error("Selected compound not found");
                     }
-                    let molesProduct=(molesReactant/reactant.coeff)*product.coeff;
+                    let molesProduct=(molesReactant/reactant.coefficient)*product.coefficient;
                     document.getElementById("stoich-result").innerHTML=`<p>Moles of ${productFormula}: ${molesProduct.toFixed(2)}</p>`;
                 }
                 else if (type=="reactant-from-product"){
@@ -328,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     if (!product||!reactant){
                         throw new Error("Selected compound not found");
                     }
-                    let molesReactant=(molesProduct/product.coeff)*reactant.coeff;
+                    let molesReactant=(molesProduct/product.coefficient)*reactant.coefficient;
                     document.getElementById("stoich-result").innerHTML=`<p>Moles of ${reactantFormula}: ${molesReactant.toFixed(2)}</p>`;
                 }
                 else if (type=="limiting-reactant"){
@@ -348,21 +346,21 @@ document.addEventListener("DOMContentLoaded", function(){
                     let minRatio=Infinity;
                     let limitingReactant=null;
                     for (let r of parsed.reactants){
-                        let ratio=reactantMoles[r.formula]/r.coeff;
+                        let ratio=reactantMoles[r.formula]/r.coefficient;
                         if (ratio<minRatio){
                             minRatio=ratio;
                             limitingReactant=r.formula;
                         }
                     }
-                    let molesProduct=minRatio*product.coeff;
+                    let molesProduct=minRatio*product.coefficient;
                     document.getElementById("stoich-result").innerHTML=`<p>Limiting reactant: ${limitingReactant}</p><p>Moles of ${productFormula}: ${molesProduct.toFixed(2)}</p>`;
                 }
             }
             catch (error){
                 document.getElementById("stoich-result").innerHTML=`<p>Error: ${error.message}</p>`;
             }
-        });
-        document.getElementById("calculate-dilution").addEventListener("click", function(){
+        }
+        function calculateDilution(){
             try{
                 let solveFor=document.getElementById("dilution-solve-for").value;
                 let M1=parseFloat(document.getElementById("dilution-M1").value);
@@ -399,8 +397,8 @@ document.addEventListener("DOMContentLoaded", function(){
             catch (error){
                 document.getElementById("dilution-result").innerHTML=`<p>Error: ${error.message}</p>`;
             }
-        });
-        document.getElementById("calculate-mass-percent").addEventListener("click", function(){
+        }
+        function calculateMassPercent(){
             try{
                 let solute=parseFloat(document.getElementById("mass-solute").value);
                 let solution=parseFloat(document.getElementById("mass-solution").value);
@@ -430,8 +428,8 @@ document.addEventListener("DOMContentLoaded", function(){
             catch (error){
                 document.getElementById("mass-percent-result").innerHTML=`<p>Error: ${error.message}</p>`;
             }
-        });
-        document.getElementById("calculate-mixing").addEventListener("click", function(){
+        }
+        function calculateMixing(){
             try{
                 let C1=parseFloat(document.getElementById("mix-C1").value);
                 let V1=parseFloat(document.getElementById("mix-V1").value);
@@ -442,21 +440,26 @@ document.addEventListener("DOMContentLoaded", function(){
                 let totalMoles=(C1*V1)+(C2*V2);
                 let totalVolume=V1+V2;
                 let C_final=totalMoles/totalVolume;
-                document.getElementById("mixing-result").innerHTML=`
-                    <p>Final Concentration: ${C_final.toFixed(4)} M</p>
-                    <p>Total Volume: ${totalVolume.toFixed(4)} L</p>
-                `;
+                document.getElementById("mixing-result").innerHTML=`<p>Final Concentration: ${C_final.toFixed(4)} M</p><p>Total Volume: ${totalVolume.toFixed(4)} L</p>`;
             }
             catch (error){
                 document.getElementById("mixing-result").innerHTML=
                     `<p>Error: ${error.message}</p>`;
             }
-        });
+        }
         function validateInputs(inputs){
             if (inputs.some(isNaN)){
                 throw new Error("Please fill all required fields with valid numbers");
             }
         }
+        document.getElementById("lookup-button").addEventListener("click", lookUpElement);
+        document.getElementById("calculate-mass-button").addEventListener("click", calculateMass);
+        document.getElementById("balance-button").addEventListener("click", balanceEquations);
+        document.getElementById("calculation-type").addEventListener("change", getCalculationType);
+        document.getElementById("calculate-stoich-button").addEventListener("click", calculateStoichiometry);
+        document.getElementById("calculate-dilution").addEventListener("click", calculateDilution);
+        document.getElementById("calculate-mass-percent").addEventListener("click", calculateMassPercent);
+        document.getElementById("calculate-mixing").addEventListener("click", calculateMixing);
     })
     .catch(err=>{
         console.error("Error fetching data:", err);
