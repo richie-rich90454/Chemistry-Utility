@@ -452,6 +452,119 @@ document.addEventListener("DOMContentLoaded", function(){
                 throw new Error("Please fill all required fields with valid numbers");
             }
         }
+        function calculateIdealGasLaw(){
+            try{
+                let solveFor=document.getElementById("ideal-solve-for").value;
+                let units=document.getElementById("ideal-R-units").value;
+                let R=units=="atm-L"?0.0821: 8.314;
+                let P=parseFloat(document.getElementById("ideal-P").value);
+                let V=parseFloat(document.getElementById("ideal-V").value);
+                let n=parseFloat(document.getElementById("ideal-n").value);
+                let T=parseFloat(document.getElementById("ideal-T").value);
+                let result, formula;
+                if (solveFor=="P"){
+                    if (isNaN(V)||isNaN(n)||isNaN(T)) throw new Error("Please provide V, n, T");
+                    result=(n*R*T)/V;
+                    formula="P=(nRT)/V";
+                }
+                else if (solveFor=="V"){
+                    if (isNaN(P)||isNaN(n)||isNaN(T)) throw new Error("Please provide P, n, T");
+                    result=(n*R*T)/P;
+                    formula="V=(nRT)/P";
+                }
+                else if (solveFor=="n"){
+                    if (isNaN(P)||isNaN(V)||isNaN(T)) throw new Error("Please provide P, V, T");
+                    result=(P*V)/(R*T);
+                    formula="n=(PV)/(RT)";
+                }
+                else if (solveFor=="T"){
+                    if (isNaN(P)||isNaN(V)||isNaN(n)) throw new Error("Please provide P, V, n");
+                    result=(P*V)/(n*R);
+                    formula="T=(PV)/(nR)";
+                }
+                let unit=solveFor=="P"?(units=="atm-L"?"atm": "Pa"):solveFor=="V"?(units=="atm-L"?"L": "m³"):solveFor=="n"?"mol": "K";
+                document.getElementById("ideal-result").innerHTML=`<p>${formula}</p><p>Result: ${result.toFixed(4)} ${unit}</p>`;
+            }
+            catch (error){
+                document.getElementById("ideal-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        }
+        document.getElementById("ideal-R-units").addEventListener("change", function(){
+            let units=this.value;
+            if (units=="atm-L"){
+                document.getElementById("ideal-P").placeholder="P (atm)";
+                document.getElementById("ideal-V").placeholder="V (L)";
+            }
+            else if (units=="SI"){
+                document.getElementById("ideal-P").placeholder="P (Pa)";
+                document.getElementById("ideal-V").placeholder="V (m³)";
+            }
+        });
+        function calculateCombinedGasLaw(){
+            try{
+                let solveFor=document.getElementById("combined-solve-for").value;
+                let P1=parseFloat(document.getElementById("combined-P1").value);
+                let V1=parseFloat(document.getElementById("combined-V1").value);
+                let T1=parseFloat(document.getElementById("combined-T1").value);
+                let P2=parseFloat(document.getElementById("combined-P2").value);
+                let V2=parseFloat(document.getElementById("combined-V2").value);
+                let T2=parseFloat(document.getElementById("combined-T2").value);
+                let result, formula;
+                if (solveFor=="P1"){
+                    if (isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide V₁, T₁, P₂, V₂, T₂");
+                    result=(P2*V2*T1)/(V1*T2);
+                    formula="P₁=(P₂ V₂ T₁)/(V₁ T₂)";
+                }
+                else if (solveFor=="V1"){
+                    if (isNaN(P1)||isNaN(T1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P₁, T₁, P₂, V₂, T₂");
+                    result=(P2*V2*T1)/(P1*T2);
+                    formula="V₁=(P₂ V₂ T₁)/(P₁ T₂)";
+                }
+                else if (solveFor=="T1"){
+                    if (isNaN(P1)||isNaN(V1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P₁, V₁, P₂, V₂, T₂");
+                    result=(P1*V1*T2)/(P2*V2);
+                    formula="T₁=(P₁ V₁ T₂)/(P₂ V₂)";
+                }
+                else if (solveFor=="P2"){
+                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P₁, V₁, T₁, V₂, T₂");
+                    result=(P1*V1*T2)/(V2*T1);
+                    formula="P₂=(P₁ V₁ T₂)/(V₂ T₁)";
+                }
+                else if (solveFor=="V2"){
+                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(T2)) throw new Error("Please provide P₁, V₁, T₁, P₂, T₂");
+                    result=(P1*V1*T2)/(P2*T1);
+                    formula="V₂=(P₁ V₁ T₂)/(P₂ T₁)";
+                }
+                else if (solveFor=="T2"){
+                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(V2)) throw new Error("Please provide P₁, V₁, T₁, P₂, V₂");
+                    result=(P2*V2*T1)/(P1*V1);
+                    formula="T₂=(P₂ V₂ T₁)/(P₁ V₁)";
+                }
+                let unit=solveFor.includes("P")?"pressure units":
+                           solveFor.includes("V")?"volume units":
+                           solveFor.includes("T")?"K": "";
+                document.getElementById("combined-result").innerHTML=`<p>${formula}</p><p>Result: ${result.toFixed(4)} ${unit}</p>`;
+            }
+            catch (error){
+                document.getElementById("combined-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        }
+        function calculateVanDerWaals(){
+            try{
+                let V=parseFloat(document.getElementById("vdw-V").value);
+                let n=parseFloat(document.getElementById("vdw-n").value);
+                let T=parseFloat(document.getElementById("vdw-T").value);
+                let a=parseFloat(document.getElementById("vdw-a").value);
+                let b=parseFloat(document.getElementById("vdw-b").value);
+                if (isNaN(V)||isNaN(n)||isNaN(T)||isNaN(a)||isNaN(b)) throw new Error("Please provide all inputs");
+                let R=0.0821;
+                let P=(n*R*T)/(V-n*b)-a*(n/V)**2;
+                document.getElementById("vdw-result").innerHTML=`<p>P=${P.toFixed(4)} atm</p>`;
+            }
+            catch (error){
+                document.getElementById("vdw-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        }
         document.getElementById("element-input").addEventListener("keyup", lookUpElement);
         document.getElementById("formula-input").addEventListener("keyup", calculateMass);
         document.getElementById("balance-button").addEventListener("click", balanceEquations);
@@ -460,6 +573,9 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("calculate-dilution").addEventListener("click", calculateDilution);
         document.getElementById("calculate-mass-percent").addEventListener("click", calculateMassPercent);
         document.getElementById("calculate-mixing").addEventListener("click", calculateMixing);
+        document.getElementById("calculate-ideal").addEventListener("click", calculateIdealGasLaw);
+        document.getElementById("calculate-combined").addEventListener("click", calculateCombinedGasLaw);
+        document.getElementById("calculate-vdw").addEventListener("click", calculateVanDerWaals);
     })
     .catch(err=>{
         console.error("Error fetching data:", err);

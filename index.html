@@ -89,7 +89,7 @@
                 margin: 2rem auto;
                 padding: 2rem;
                 border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,.1);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
             }
             .main-groups{
                 font-family: "Noto Sans", sans-serif;
@@ -242,20 +242,80 @@
                 <button id="calculate-mixing">Calculate</button>
                 <div id="mixing-result" class="result"></div>
             </div>
-            <div id="stoichiometry" class="main-groups">
-                <h2>Stoichiometry</h2>
-                <p>Enter the balanced chemical equation:</p>
-                <input type="text" id="stoich-equation-input" placeholder="E.g., 2H2+O2->2H2O">
-                <p>Select calculation type:</p>
-                <select id="calculation-type">
-                    <option value="product-from-reactant">Product from Reactant</option>
-                    <option value="reactant-from-product">Reactant from Product</option>
-                    <option value="limiting-reactant">Limiting Reactant</option>
-                </select>
-                <div id="stoich-inputs"></div>
-                <button id="calculate-stoich-button">Calculate</button>
-                <div id="stoich-result" class="result"></div>
-            </div>
+            <div id="gas-laws" class="main-groups">
+                <h2>Gas Laws</h2>
+                <div id="ideal-gas-law">
+                    <h3>Ideal Gas Law (PV = nRT)</h3>
+                    <p>Solve for:</p>
+                    <select id="ideal-solve-for">
+                        <option value="P">Pressure (P)</option>
+                        <option value="V">Volume (V)</option>
+                        <option value="n">Moles (n)</option>
+                        <option value="T">Temperature (T)</option>
+                    </select>
+                    <div class="input-group">
+                        <input type="number" id="ideal-P" placeholder="P (atm)" step="any">
+                        <input type="number" id="ideal-V" placeholder="V (L)" step="any">
+                        <input type="number" id="ideal-n" placeholder="n (mol)" step="any">
+                        <input type="number" id="ideal-T" placeholder="T (K)" step="any">
+                    </div>
+                    <p>Select units for R:</p>
+                    <select id="ideal-R-units">
+                        <option value="atm-L">atm, L (R=0.0821)</option>
+                        <option value="SI">Pa, m³ (R=8.314)</option>
+                    </select>
+                    <button id="calculate-ideal">Calculate</button>
+                    <div id="ideal-result" class="result"></div>
+                </div>
+                <div id="combined-gas-law">
+                    <h3>Combined Gas Law ((P₁V₁)/T₁ = (P₂V₂)/T₂)</h3>
+                    <p>Solve for:</p>
+                    <select id="combined-solve-for">
+                        <option value="P1">P₁</option>
+                        <option value="V1">V₁</option>
+                        <option value="T1">T₁</option>
+                        <option value="P2">P₂</option>
+                        <option value="V2">V₂</option>
+                        <option value="T2">T₂</option>
+                    </select>
+                    <div class="input-group">
+                        <input type="number" id="combined-P1" placeholder="P₁" step="any">
+                        <input type="number" id="combined-V1" placeholder="V₁" step="any">
+                        <input type="number" id="combined-T1" placeholder="T₁ (K)" step="any">
+                        <input type="number" id="combined-P2" placeholder="P₂" step="any">
+                        <input type="number" id="combined-V2" placeholder="V₂" step="any">
+                        <input type="number" id="combined-T2" placeholder="T₂ (K)" step="any">
+                    </div>
+                    <button id="calculate-combined">Calculate</button>
+                    <div id="combined-result" class="result"></div>
+                </div>
+                <div id="van-der-waals" style="margin-bottom: 1.5rem;">
+                    <h3>Van der Waals Equation</h3>
+                    <p>Calculate Pressure (P) for a real gas.</p>
+                    <div class="input-group">
+                        <input type="number" id="vdw-V" placeholder="V (L)" step="any">
+                        <input type="number" id="vdw-n" placeholder="n (mol)" step="any">
+                        <input type="number" id="vdw-T" placeholder="T (K)" step="any">
+                        <input type="number" id="vdw-a" placeholder="a (L² atm mol⁻²)" step="any">
+                        <input type="number" id="vdw-b" placeholder="b (L mol⁻¹)" step="any">
+                    </div>
+                    <button id="calculate-vdw">Calculate P</button>
+                    <div id="vdw-result" class="result"></div>
+                </div>
+                <div id="stoichiometry" class="main-groups">
+                    <h2>Stoichiometry</h2>
+                    <p>Enter the balanced chemical equation:</p>
+                    <input type="text" id="stoich-equation-input" placeholder="E.g., 2H2+O2->2H2O">
+                    <p>Select calculation type:</p>
+                    <select id="calculation-type">
+                        <option value="product-from-reactant">Product from Reactant</option>
+                        <option value="reactant-from-product">Reactant from Product</option>
+                        <option value="limiting-reactant">Limiting Reactant</option>
+                    </select>
+                    <div id="stoich-inputs"></div>
+                    <button id="calculate-stoich-button">Calculate</button>
+                    <div id="stoich-result" class="result"></div>
+                </div>
         </main>
         <footer id="footer">
             <p>&copy; 2025 Richards Blogs | All Rights Reserved</p>
