@@ -452,8 +452,8 @@ document.addEventListener("DOMContentLoaded", function(){
                 throw new Error("Please fill all required fields with valid numbers");
             }
         }
-        document.getElementById("lookup-button").addEventListener("click", lookUpElement);
-        document.getElementById("calculate-mass-button").addEventListener("click", calculateMass);
+        document.getElementById("element-input").addEventListener("keyup", lookUpElement);
+        document.getElementById("formula-input").addEventListener("keyup", calculateMass);
         document.getElementById("balance-button").addEventListener("click", balanceEquations);
         document.getElementById("calculation-type").addEventListener("change", getCalculationType);
         document.getElementById("calculate-stoich-button").addEventListener("click", calculateStoichiometry);
