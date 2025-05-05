@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     i--;
                 }
                 if (i<0){
-                    throw new Error("No solution found within coefficienticient limit of "+maxcoefficient);
+                    throw new Error("No solution found within coefficient limit of "+maxcoefficient);
                 }
                 coefficient[i]++;
                 for (let j=i+1;j<m;j++){
@@ -489,17 +489,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 document.getElementById("ideal-result").innerHTML=`<p>Error: ${error.message}</p>`;
             }
         }
-        document.getElementById("ideal-R-units").addEventListener("change", function(){
-            let units=this.value;
-            if (units=="atm-L"){
-                document.getElementById("ideal-P").placeholder="P (atm)";
-                document.getElementById("ideal-V").placeholder="V (L)";
-            }
-            else if (units=="SI"){
-                document.getElementById("ideal-P").placeholder="P (Pa)";
-                document.getElementById("ideal-V").placeholder="V (m³)";
-            }
-        });
         function calculateCombinedGasLaw(){
             try{
                 let solveFor=document.getElementById("combined-solve-for").value;
@@ -565,6 +554,39 @@ document.addEventListener("DOMContentLoaded", function(){
                 document.getElementById("vdw-result").innerHTML=`<p>Error: ${error.message}</p>`;
             }
         }
+        function calculateHalfLife(){
+            try{
+                let solveFor=document.getElementById("half-life-solve-for").value;
+                let N0=parseFloat(document.getElementById("initial-quantity").value);
+                let t=parseFloat(document.getElementById("time-input").value);
+                let t_half=parseFloat(document.getElementById("half-life-input").value);
+                let result;
+                switch (solveFor){
+                    case "remaining":
+                        if (isNaN(N0)||isNaN(t)||isNaN(t_half)) throw new Error("Missing inputs");
+                        result=N0*Math.pow(0.5, t/t_half);
+                        document.getElementById("half-life-result").innerHTML=`<p>Remaining: ${result.toFixed(4)} (after ${t} units)</p>`;
+                        break;
+                    case "time":
+                        if (isNaN(N0)||isNaN(t_half)) throw new Error("Missing inputs");
+                        let Nt=parseFloat(prompt("Enter remaining quantity:"));
+                        if (isNaN(Nt)) throw new Error("Invalid remaining quantity");
+                        result=(Math.log(Nt/N0)/Math.log(0.5))*t_half;
+                        document.getElementById("half-life-result").innerHTML=`<p>Time needed: ${result.toFixed(4)} units</p>`;
+                        break;
+                    case "half-life":
+                        if (isNaN(N0)||isNaN(t)) throw new Error("Missing inputs");
+                        let Nt2=parseFloat(prompt("Enter remaining quantity:"));
+                        if (isNaN(Nt2)) throw new Error("Invalid remaining quantity");
+                        result=t/(Math.log(Nt2/N0)/Math.log(0.5));
+                        document.getElementById("half-life-result").innerHTML=`<p>Half-life: ${result.toFixed(4)} units</p>`;
+                        break;
+                }
+            }
+            catch (error){
+                document.getElementById("half-life-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        }
         document.getElementById("element-input").addEventListener("keyup", lookUpElement);
         document.getElementById("formula-input").addEventListener("keyup", calculateMass);
         document.getElementById("balance-button").addEventListener("click", balanceEquations);
@@ -576,6 +598,18 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("calculate-ideal").addEventListener("click", calculateIdealGasLaw);
         document.getElementById("calculate-combined").addEventListener("click", calculateCombinedGasLaw);
         document.getElementById("calculate-vdw").addEventListener("click", calculateVanDerWaals);
+        document.getElementById("ideal-R-units").addEventListener("change", function(){
+            let units=this.value;
+            if (units=="atm-L"){
+                document.getElementById("ideal-P").placeholder="P (atm)";
+                document.getElementById("ideal-V").placeholder="V (L)";
+            }
+            else if (units=="SI"){
+                document.getElementById("ideal-P").placeholder="P (Pa)";
+                document.getElementById("ideal-V").placeholder="V (m³)";
+            }
+        });
+        document.getElementById("calculate-half-life").addEventListener("click", calculateHalfLife);
     })
     .catch(err=>{
         console.error("Error fetching data:", err);

@@ -302,6 +302,25 @@
                     <button id="calculate-vdw">Calculate P</button>
                     <div id="vdw-result" class="result"></div>
                 </div>
+                <div id="nuclear-chemistry" class="main-groups">
+                    <h2>Nuclear Chemistry</h2>
+                    <div id="half-life-calc" class="sub-group">
+                        <h3>Half-Life Calculator</h3>
+                        <p>Calculate:</p>
+                        <select id="half-life-solve-for">
+                            <option value="remaining">Remaining Quantity</option>
+                            <option value="time">Time Required</option>
+                            <option value="half-life">Half-Life</option>
+                        </select>
+                        <div class="input-group">
+                            <input type="number" id="initial-quantity" placeholder="Initial Quantity" step="any">
+                            <input type="number" id="time-input" placeholder="Time (s/min/yr)" step="any">
+                            <input type="number" id="half-life-input" placeholder="Half-Life" step="any">
+                        </div>
+                        <button id="calculate-half-life">Calculate</button>
+                        <div id="half-life-result" class="result"></div>
+                    </div>
+                </div>
                 <div id="stoichiometry" class="main-groups">
                     <h2>Stoichiometry</h2>
                     <p>Enter the balanced chemical equation:</p>
