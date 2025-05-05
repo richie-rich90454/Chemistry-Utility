@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             let reactants=parts[0].split("+");
             let products=parts[1].split("+");
-            return{reactants, products};
+            return {reactants, products};
         }
         function isEquationBalanced(coefficient, reactantsParsed, productsParsed, elements){
             let leftCounts={};
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             let reactants=parts[0].split("+").map(parseTerm);
             let products=parts[1].split("+").map(parseTerm);
-            return{reactants, products};
+            return {reactants, products};
         }
         function parseTerm(term){
             let match=term.match(/^(\d+)?(.+)$/);
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             let coefficient=match[1]?parseInt(match[1]):1;
             let formula=match[2];
-            return{formula, coefficient};
+            return {formula, coefficient};
         }
         function getCalculationType(){
             let type=this.value;
@@ -560,25 +560,22 @@ document.addEventListener("DOMContentLoaded", function(){
                 let N0=parseFloat(document.getElementById("initial-quantity").value);
                 let t=parseFloat(document.getElementById("time-input").value);
                 let t_half=parseFloat(document.getElementById("half-life-input").value);
+                let Nt=parseFloat(document.getElementById("remaining-quantity").value);
                 let result;
                 switch (solveFor){
                     case "remaining":
-                        if (isNaN(N0)||isNaN(t)||isNaN(t_half)) throw new Error("Missing inputs");
+                        if (isNaN(N0)||isNaN(t)||isNaN(t_half)) throw new Error("Missing inputs for initial quantity, time, or half-life");
                         result=N0*Math.pow(0.5, t/t_half);
                         document.getElementById("half-life-result").innerHTML=`<p>Remaining: ${result.toFixed(4)} (after ${t} units)</p>`;
                         break;
                     case "time":
-                        if (isNaN(N0)||isNaN(t_half)) throw new Error("Missing inputs");
-                        let Nt=parseFloat(prompt("Enter remaining quantity:"));
-                        if (isNaN(Nt)) throw new Error("Invalid remaining quantity");
+                        if (isNaN(N0)||isNaN(t_half)||isNaN(Nt)) throw new Error("Missing inputs for initial quantity, half-life, or remaining quantity");
                         result=(Math.log(Nt/N0)/Math.log(0.5))*t_half;
                         document.getElementById("half-life-result").innerHTML=`<p>Time needed: ${result.toFixed(4)} units</p>`;
                         break;
                     case "half-life":
-                        if (isNaN(N0)||isNaN(t)) throw new Error("Missing inputs");
-                        let Nt2=parseFloat(prompt("Enter remaining quantity:"));
-                        if (isNaN(Nt2)) throw new Error("Invalid remaining quantity");
-                        result=t/(Math.log(Nt2/N0)/Math.log(0.5));
+                        if (isNaN(N0)||isNaN(t)||isNaN(Nt)) throw new Error("Missing inputs for initial quantity, time, or remaining quantity");
+                        result=t/(Math.log(Nt/N0)/Math.log(0.5));
                         document.getElementById("half-life-result").innerHTML=`<p>Half-life: ${result.toFixed(4)} units</p>`;
                         break;
                 }
@@ -610,6 +607,11 @@ document.addEventListener("DOMContentLoaded", function(){
             }
         });
         document.getElementById("calculate-half-life").addEventListener("click", calculateHalfLife);
+        document.getElementById("half-life-solve-for").addEventListener("change", function(){
+            let solveFor=this.value;
+            let remainingQuantityGroup=document.getElementById("remaining-quantity-group");
+            remainingQuantityGroup.style.display=(solveFor==="time"||solveFor==="half-life")?"block":"none";
+        });
     })
     .catch(err=>{
         console.error("Error fetching data:", err);

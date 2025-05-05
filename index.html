@@ -160,6 +160,9 @@
                 gap: .5rem;
                 margin: 1rem 0;
             }
+            #remaining-quantity-group{
+                display: none;
+            }
             @media (max-width: 768px){
                 h1{
                     font-size: 2rem;
@@ -316,11 +319,13 @@
                             <input type="number" id="initial-quantity" placeholder="Initial Quantity" step="any">
                             <input type="number" id="time-input" placeholder="Time (s/min/yr)" step="any">
                             <input type="number" id="half-life-input" placeholder="Half-Life" step="any">
+                            <div id="remaining-quantity-group">
+                                <input type="number" id="remaining-quantity" placeholder="Remaining Quantity" step="any">
+                            </div>
                         </div>
                         <button id="calculate-half-life">Calculate</button>
                         <div id="half-life-result" class="result"></div>
                     </div>
-                </div>
                 <div id="stoichiometry" class="main-groups">
                     <h2>Stoichiometry</h2>
                     <p>Enter the balanced chemical equation:</p>
