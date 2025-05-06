@@ -74,90 +74,63 @@ document.addEventListener("DOMContentLoaded", function(){
             return stack[0];
         }
         function formatFormula(formula){
-            let stack=[{}];
-            let i=0;
-            while (i<formula.length){
-                if (/[A-Z]/.test(formula[i])){
-                    let [symbol, nextIndex]=parseElement(formula, i);
-                    i=nextIndex;
-                    let [count, numIndex]=parseNumber(formula, i);
-                    i=numIndex;
-                    if (stack[stack.length-1][symbol]){
-                        stack[stack.length-1][symbol]+=count;
-                    }
-                    else{
-                        stack[stack.length-1][symbol]=count;
-                    }
+            let compound={};
+            let regex=/([A-Z][a-z]*)(\d*)/g;
+            let match;
+            let lastIndex=0;
+            while ((match=regex.exec(formula))!==null){
+                let element=match[1];
+                let subscript=match[2]?parseInt(match[2]):1;
+                if (compound[element]){
+                    throw new Error(`Oops, ${element} shows up twice in ${formula}`);
                 }
-                else if (formula[i]=="("){
-                    stack.push({});
-                    i++;
-                }
-                else if (formula[i]==")"){
-                    if (stack.length<2){
-                        throw new Error("Unmatched \")\"");
-                    }
-                    let subgroup=stack.pop();
-                    let [multiplier, numIndex]=parseNumber(formula, i+1);
-                    i=numIndex;
-                    for (let element in subgroup){
-                        if (stack[stack.length-1][element]){
-                            stack[stack.length-1][element]+=subgroup[element]*multiplier;
-                        }
-                        else{
-                            stack[stack.length-1][element]=subgroup[element]*multiplier;
-                        }
-                    }
-                }
-                else{
-                    throw new Error("Invalid character: "+formula[i]);
-                }
+                compound[element]=subscript;
+                lastIndex=regex.lastIndex;
             }
-            if (stack.length>1){
-                throw new Error("Unmatched \"(\"");
+            if (lastIndex!==formula.length){
+                throw new Error(`Bad formula: ${formula}`);
             }
-            return stack[0];
+            return compound;
         }
         function parseEquation(equation){
-            equation=equation.replace(/\s+/g,"");
-            let parts=equation.split("->");
-            if (parts.length!=2){
-                throw new Error("Invalid equation format: missing \"->\"");
+            let sides=equation.split("->").map(side=>side.trim());
+            if (sides.length!==2){
+                throw new Error("Equation format is off, use \"->\" between sides");
             }
-            let reactants=parts[0].split("+");
-            let products=parts[1].split("+");
-            return {reactants, products};
+            let reactants=sides[0].split("+").map(r=>r.trim());
+            let products=sides[1].split("+").map(p=>p.trim());
+            return { reactants, products };
         }
-        function isEquationBalanced(coefficient, reactantsParsed, productsParsed, elements){
-            let leftCounts={};
-            let rightCounts={};
+        function isEquationBalanced(coefficients, reactantCompounds, productCompounds, elements){
+            let reactantAtoms={};
+            let productAtoms={};
             for (let element of elements){
-                leftCounts[element]=0;
-                rightCounts[element]=0;
+                reactantAtoms[element]=0;
+                productAtoms[element]=0;
             }
-            for (let i=0;i<reactantsParsed.length;i++){
-                let compound=reactantsParsed[i];
-                let c=coefficient[i];
+            for (let i=0;i<reactantCompounds.length;i++){
+                let compound=reactantCompounds[i];
+                let coeff=coefficients[i];
                 for (let element in compound){
-                    leftCounts[element]+=compound[element]*c;
+                    reactantAtoms[element]+=coeff*compound[element];
                 }
             }
-            for (let i=0;i<productsParsed.length;i++){
-                let compound=productsParsed[i];
-                let c=coefficient[reactantsParsed.length+i];
+            for (let i=0;i<productCompounds.length;i++){
+                let compound=productCompounds[i];
+                let coeff=coefficients[reactantCompounds.length+i];
                 for (let element in compound){
-                    rightCounts[element]+=compound[element]*c;
+                    productAtoms[element]+=coeff*compound[element];
                 }
             }
             for (let element of elements){
-                if (leftCounts[element]!=rightCounts[element]){
+                if (reactantAtoms[element]!==productAtoms[element]){
                     return false;
                 }
             }
             return true;
         }
         function balanceEquation(equation){
-            let{reactants, products}=parseEquation(equation);
+            let { reactants, products }=parseEquation(equation);
             let allCompounds=[...reactants, ...products];
             let parsedCompounds=allCompounds.map(formatFormula);
             let elements=new Set();
@@ -168,30 +141,37 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             elements=Array.from(elements);
             let m=allCompounds.length;
-            let maxcoefficient=10;
+            let maxCoefficient=750;
             let coefficient=new Array(m).fill(1);
+            let iteration=0;
+            let maxIterations=1e35;
             while (true){
+                iteration++;
+                document.getElementById("balance-result").innerHTML="Balancing...";
+                if (iteration>maxIterations){
+                    throw new Error("Too many tries! Cannot balance this equation.");
+                }
                 if (isEquationBalanced(coefficient, parsedCompounds.slice(0, reactants.length), parsedCompounds.slice(reactants.length), elements)){
                     let balancedEquation="";
                     for (let i=0;i<reactants.length;i++){
                         balancedEquation+=coefficient[i]==1?"":coefficient[i];
                         balancedEquation+=allCompounds[i]+" + ";
                     }
-                    balancedEquation=balancedEquation.slice(0,-3);
+                    balancedEquation=balancedEquation.slice(0, -3);
                     balancedEquation+=" -> ";
                     for (let i=reactants.length;i<m;i++){
                         balancedEquation+=coefficient[i]==1?"":coefficient[i];
                         balancedEquation+=allCompounds[i]+" + ";
                     }
-                    balancedEquation=balancedEquation.slice(0,-3);
+                    balancedEquation=balancedEquation.slice(0, -3);
                     return balancedEquation;
                 }
                 let i=m-1;
-                while (i>=0&&coefficient[i]==maxcoefficient){
+                while (i>=0&&coefficient[i]==maxCoefficient){
                     i--;
                 }
                 if (i<0){
-                    throw new Error("No solution found within coefficient limit of "+maxcoefficient);
+                    throw new Error(`No solution found with coefficients up to ${maxCoefficient}`);
                 }
                 coefficient[i]++;
                 for (let j=i+1;j<m;j++){
@@ -610,7 +590,7 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("half-life-solve-for").addEventListener("change", function(){
             let solveFor=this.value;
             let remainingQuantityGroup=document.getElementById("remaining-quantity-group");
-            remainingQuantityGroup.style.display=(solveFor==="time"||solveFor==="half-life")?"block":"none";
+            remainingQuantityGroup.style.display=(solveFor=="time"||solveFor=="half-life")?"block":"none";
         });
     })
     .catch(err=>{
