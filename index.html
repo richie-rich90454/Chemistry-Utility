@@ -65,8 +65,8 @@
                 color: #FFF;
                 font-size: 3.5rem;
                 background: linear-gradient(30deg, var(--primary-red), var(--primary-blue));
-                margin: 0;
-                padding: 2rem 1rem;
+                margin: 0 0 1rem 0;
+                padding: 2rem;
                 text-align: center;
             }
             h2{
@@ -80,7 +80,7 @@
                 text-align: center;
                 background-color: var(--dark-blue);
                 color: #FFF;
-                padding: 1.5rem;
+                padding: 2rem;
                 margin-top: 2rem;
             }
             #main{
@@ -94,12 +94,11 @@
             }
             .main-groups{
                 font-family: "Noto Sans", sans-serif;
-                padding: 2rem 0;
+                padding: 2rem;
                 margin: 0 0 2rem 0;
                 border-top: 2px solid var(--text-dark);
             }
-            #stoichiometry{
-                font-family: "Noto Sans", sans-serif;
+            .main-groups:last-child{
                 border-bottom: 2px solid var(--text-dark);
             }
             input[type="text"], input[type="number"]{
@@ -128,7 +127,7 @@
             }
             .result{
                 font-family: "EB Garamond", serif;
-                margin-top: 1.5rem;
+                margin: 1.5rem 0;
                 padding: 1.5rem;
                 background-color: #FFF;
                 border-radius: 6px;
@@ -175,14 +174,16 @@
             @media (max-width: 768px){
                 h1{
                     font-size: 2rem;
-                    padding: 1.5rem 1rem;
+                    padding: 1.5rem;
+                    margin: 0 0 .5rem
                 }
                 #main{
-                    margin: 1rem;
-                    padding: 1rem;
+                    margin: 1.5rem;
+                    padding: 1.5rem;
                 }
                 .main-groups{
-                    padding: 1.5rem 0;
+                    padding: 1.5rem;
+                    margin: 0 0 1.5rem 0;
                 }
             }
         </style>
@@ -254,6 +255,28 @@
                 <button id="calculate-mixing">Calculate</button>
                 <div id="mixing-result" class="result"></div>
             </div>
+            <div id="nuclear-chemistry" class="main-groups">
+                <h2>Nuclear Chemistry</h2>
+                <div id="half-life-calc" class="sub-group">
+                    <h3>Half-Life Calculator</h3>
+                    <p>Calculate:</p>
+                    <select id="half-life-solve-for">
+                        <option value="remaining">Remaining Quantity</option>
+                        <option value="time">Time Required</option>
+                        <option value="half-life">Half-Life</option>
+                    </select>
+                    <button id="calculate-half-life">Calculate</button>
+                    <div class="input-group">
+                        <input type="number" id="initial-quantity" placeholder="Initial Quantity" step="any">
+                        <input type="number" id="time-input" placeholder="Time (s/min/yr)" step="any">
+                        <input type="number" id="half-life-input" placeholder="Half-Life" step="any">
+                        <div id="remaining-quantity-group">
+                            <input type="number" id="remaining-quantity" placeholder="Remaining Quantity" step="any">
+                        </div>
+                    </div>
+                    <div id="half-life-result" class="result"></div>
+                </div>
+            </div>
             <div id="gas-laws" class="main-groups">
                 <h2>Gas Laws</h2>
                 <div id="ideal-gas-law">
@@ -314,26 +337,49 @@
                     <button id="calculate-vdw">Calculate P</button>
                     <div id="vdw-result" class="result"></div>
                 </div>
-                <div id="nuclear-chemistry" class="main-groups">
-                    <h2>Nuclear Chemistry</h2>
-                    <div id="half-life-calc" class="sub-group">
-                    <h3>Half-Life Calculator</h3>
-                    <p>Calculate:</p>
-                    <select id="half-life-solve-for">
-                        <option value="remaining">Remaining Quantity</option>
-                        <option value="time">Time Required</option>
-                        <option value="half-life">Half-Life</option>
+            </div>
+            <div id="electrochemistry" class="main-groups">
+                <h2>Electrochemistry</h2>
+                <div id="cell-potential">
+                    <h3>Cell Potential Calculator</h3>
+                    <p>Enter the standard reduction potentials for the two half-reactions:</p>
+                    <div class="input-group">
+                        <input type="number" id="E1" placeholder="E°_1 (V)" step="any">
+                        <input type="number" id="E2" placeholder="E°_2 (V)" step="any">
+                    </div>
+                    <button id="calculate-cell-potential">Calculate E°_cell</button>
+                    <div id="cell-potential-result" class="result"></div>
+                </div>
+                <div id="nernst-equation">
+                    <h3>Nernst Equation Solver</h3>
+                    <p>Calculate cell potential under non-standard conditions.</p>
+                    <div class="input-group">
+                        <input type="number" id="E-standard" placeholder="E° (V)" step="any">
+                        <input type="number" id="temperature" placeholder="T (K)" step="any">
+                        <input type="number" id="n-electrons" placeholder="n (moles of e⁻)" step="any">
+                        <input type="number" id="Q-reaction" placeholder="Q (reaction quotient)" step="any">
+                    </div>
+                    <button id="calculate-nernst">Calculate E</button>
+                    <div id="nernst-result" class="result"></div>
+                </div>
+                <div id="electrolysis">
+                    <h3>Electrolysis Calculations</h3>
+                    <p>Solve for:</p>
+                    <select id="electrolysis-solve-for">
+                        <option value="mass">Mass (m)</option>
+                        <option value="current">Current (I)</option>
+                        <option value="time">Time (t)</option>
                     </select>
                     <div class="input-group">
-                        <input type="number" id="initial-quantity" placeholder="Initial Quantity" step="any">
-                        <input type="number" id="time-input" placeholder="Time (s/min/yr)" step="any">
-                        <input type="number" id="half-life-input" placeholder="Half-Life" step="any">
-                        <div id="remaining-quantity-group">
-                        <input type="number" id="remaining-quantity" placeholder="Remaining Quantity" step="any">
+                        <input type="number" id="electrolysis-m" placeholder="Mass (g)" step="any">
+                        <input type="number" id="electrolysis-I" placeholder="Current (A)" step="any">
+                        <input type="number" id="electrolysis-t" placeholder="Time (s)" step="any">
+                        <input type="number" id="electrolysis-z" placeholder="z (electrons/ion)" step="any">
+                        <input type="number" id="electrolysis-M" placeholder="Molar mass (g/mol)" step="any">
                     </div>
+                    <button id="calculate-electrolysis">Calculate</button>
+                    <div id="electrolysis-result" class="result"></div>
                 </div>
-                <button id="calculate-half-life">Calculate</button>
-                <div id="half-life-result" class="result"></div>
             </div>
             <div id="stoichiometry" class="main-groups">
                 <h2>Stoichiometry</h2>

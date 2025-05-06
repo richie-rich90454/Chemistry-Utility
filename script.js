@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function(){
         return response.json();
     })
     .then(data=>{
+        let R=8.314;
+        let F=96485;
         let elements=data;
         function parseElement(formula, i){
             if (i<formula.length&&/[A-Z]/.test(formula[i])){
@@ -601,6 +603,66 @@ document.addEventListener("DOMContentLoaded", function(){
                 document.getElementById("half-life-result").innerHTML=`<p>Error: ${error.message}</p>`;
             }
         }
+        function calculateCellPotential(){
+            let E1=parseFloat(document.getElementById("E1").value);
+            let E2=parseFloat(document.getElementById("E2").value);
+            if (isNaN(E1)||isNaN(E2)){
+                document.getElementById("cell-potential-result").innerHTML="<p>Please enter valid numbers for both potentials.</p>";
+                return;
+            }
+            let E_cathode=Math.max(E1, E2);
+            let E_anode=Math.min(E1, E2);
+            let E_cell=E_cathode-E_anode;
+            let result=`<p>The half-reaction with E°=${E_cathode} V is the cathode, and the one with E°=${E_anode} V is the anode.</p><p>The standard cell potential E°_cell=${E_cell.toFixed(3)} V</p>`;
+            document.getElementById("cell-potential-result").innerHTML=result;
+        }
+        function calculateNernst(){
+            let E_standard=parseFloat(document.getElementById("E-standard").value);
+            let T=parseFloat(document.getElementById("temperature").value);
+            let n=parseFloat(document.getElementById("n-electrons").value);
+            let Q=parseFloat(document.getElementById("Q-reaction").value);
+            if (isNaN(E_standard)||isNaN(T)||isNaN(n)||isNaN(Q)||T<=0||n<=0||Q<=0){
+                document.getElementById("nernst-result").innerHTML="<p>Please enter valid positive numbers for all fields.</p>";
+                return;
+            }
+            let E=E_standard-(R*T/(n*F))*Math.log(Q);
+            document.getElementById("nernst-result").innerHTML=`<p>The cell potential E=${E.toFixed(3)} V</p>`;
+        }
+        function calculateElectrolysis(){
+            let solveFor=document.getElementById("electrolysis-solve-for").value;
+            let m=parseFloat(document.getElementById("electrolysis-m").value);
+            let I=parseFloat(document.getElementById("electrolysis-I").value);
+            let t=parseFloat(document.getElementById("electrolysis-t").value);
+            let z=parseFloat(document.getElementById("electrolysis-z").value);
+            let M=parseFloat(document.getElementById("electrolysis-M").value);
+            if (solveFor=="mass"&&(isNaN(I)||isNaN(t)||isNaN(z)||isNaN(M)||I<=0||t<=0||z<=0||M<=0)){
+                document.getElementById("electrolysis-result").innerHTML="<p>Please enter valid positive numbers for I, t, z, and M.</p>";
+                return;
+            }
+            else if (solveFor=="current"&&(isNaN(m)||isNaN(t)||isNaN(z)||isNaN(M)||m<=0||t<=0||z<=0||M<=0)){
+                document.getElementById("electrolysis-result").innerHTML="<p>Please enter valid positive numbers for m, t, z, and M.</p>";
+                return;
+            }
+            else if (solveFor=="time"&&(isNaN(m)||isNaN(I)||isNaN(z)||isNaN(M)||m<=0||I<=0||z<=0||M<=0)){
+                document.getElementById("electrolysis-result").innerHTML="<p>Please enter valid positive numbers for m, I, z, and M.</p>";
+                return;
+            }
+            if (solveFor=="mass"){
+                let n=(I*t)/(F*z);
+                let mass=n*M;
+                document.getElementById("electrolysis-result").innerHTML=`<p>The mass deposited m=${mass.toFixed(3)} g</p>`;
+            }
+            else if (solveFor=="current"){
+                let n=m/M;
+                let current=(n*F*z)/t;
+                document.getElementById("electrolysis-result").innerHTML=`<p>The current I=${current.toFixed(3)} A</p>`;
+            }
+            else if (solveFor=="time"){
+                let n=m/M;
+                let time=(n*F*z)/I;
+                document.getElementById("electrolysis-result").innerHTML=`<p>The time t=${time.toFixed(3)} s</p>`;
+            }
+        }
         document.getElementById("element-input").addEventListener("keyup", lookUpElement);
         document.getElementById("formula-input").addEventListener("keyup", calculateMass);
         document.getElementById("balance-button").addEventListener("click", balanceEquations);
@@ -629,6 +691,9 @@ document.addEventListener("DOMContentLoaded", function(){
             let remainingQuantityGroup=document.getElementById("remaining-quantity-group");
             remainingQuantityGroup.style.display=(solveFor=="time"||solveFor=="half-life")?"block":"none";
         });
+        document.getElementById("calculate-cell-potential").addEventListener("click", calculateCellPotential);
+        document.getElementById("calculate-nernst").addEventListener("click", calculateNernst);
+        document.getElementById("calculate-electrolysis").addEventListener("click", calculateElectrolysis);
     })
     .catch(err=>{
         console.error("Error fetching data:", err);
