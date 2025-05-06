@@ -372,22 +372,22 @@ document.addEventListener("DOMContentLoaded", function(){
                     case "M1":
                         validateInputs([V1, M2, V2]);
                         result=(M2*V2)/V1;
-                        formula="M₁=(M₂ x V₂)/V₁";
+                        formula="M<sub>1</sub>=(M<sub>2</sub> x V<sub>2</sub>)/V<sub>1</sub>";
                         break;
                     case "V1":
                         validateInputs([M1, M2, V2]);
                         result=(M2*V2)/M1;
-                        formula="V₁=(M₂ x V₂)/M₁";
+                        formula="V<sub>1</sub>=(M<sub>2</sub> x V<sub>2</sub>)/M<sub>1</sub>";
                         break;
                     case "M2":
                         validateInputs([M1, V1, V2]);
                         result=(M1*V1)/V2;
-                        formula="M₂=(M₁ x V₁)/V₂";
+                        formula="M<sub>2</sub>=(M<sub>1</sub> x V<sub>1</sub>)/V<sub>2</sub>";
                         break;
                     case "V2":
                         validateInputs([M1, V1, M2]);
                         result=(M1*V1)/M2;
-                        formula="V₂=(M₁ x V₁)/M₂";
+                        formula="V<sub>2</sub>=(M<sub>1</sub> x V<sub>1</sub>)/M<sub>2</sub>";
                         break;
                     default:
                         throw new Error("Invalid calculation type");
@@ -500,34 +500,34 @@ document.addEventListener("DOMContentLoaded", function(){
                 let T2=parseFloat(document.getElementById("combined-T2").value);
                 let result, formula;
                 if (solveFor=="P1"){
-                    if (isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide V₁, T₁, P₂, V₂, T₂");
+                    if (isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide V<sub>1</sub>, T<sub>1</sub>, P<sub>2</sub>, V<sub>2</sub>, T<sub>2</sub>");
                     result=(P2*V2*T1)/(V1*T2);
-                    formula="P₁=(P₂ V₂ T₁)/(V₁ T₂)";
+                    formula="P<sub>1</sub>=(P<sub>2</sub> V<sub>2</sub> T<sub>1</sub>)/(V<sub>1</sub> T<sub>2</sub>)";
                 }
                 else if (solveFor=="V1"){
-                    if (isNaN(P1)||isNaN(T1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P₁, T₁, P₂, V₂, T₂");
+                    if (isNaN(P1)||isNaN(T1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P<sub>1</sub>, T<sub>1</sub>, P<sub>2</sub>, V<sub>2</sub>, T<sub>2</sub>");
                     result=(P2*V2*T1)/(P1*T2);
-                    formula="V₁=(P₂ V₂ T₁)/(P₁ T₂)";
+                    formula="V<sub>1</sub>=(P<sub>2</sub> V<sub>2</sub> T<sub>1</sub>)/(P<sub>1</sub> T<sub>2</sub>)";
                 }
                 else if (solveFor=="T1"){
-                    if (isNaN(P1)||isNaN(V1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P₁, V₁, P₂, V₂, T₂");
+                    if (isNaN(P1)||isNaN(V1)||isNaN(P2)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P<sub>1</sub>, V<sub>1</sub>, P<sub>2</sub>, V<sub>2</sub>, T<sub>2</sub>");
                     result=(P1*V1*T2)/(P2*V2);
-                    formula="T₁=(P₁ V₁ T₂)/(P₂ V₂)";
+                    formula="T<sub>1</sub>=(P<sub>1</sub> V<sub>1</sub> T<sub>2</sub>)/(P<sub>2</sub> V<sub>2</sub>)";
                 }
                 else if (solveFor=="P2"){
-                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P₁, V₁, T₁, V₂, T₂");
+                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(V2)||isNaN(T2)) throw new Error("Please provide P<sub>1</sub>, V<sub>1</sub>, T<sub>1</sub>, V<sub>2</sub>, T<sub>2</sub>");
                     result=(P1*V1*T2)/(V2*T1);
-                    formula="P₂=(P₁ V₁ T₂)/(V₂ T₁)";
+                    formula="P<sub>2</sub>=(P<sub>1</sub> V<sub>1</sub> T<sub>2</sub>)/(V<sub>2</sub> T<sub>1</sub>)";
                 }
                 else if (solveFor=="V2"){
-                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(T2)) throw new Error("Please provide P₁, V₁, T₁, P₂, T₂");
+                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(T2)) throw new Error("Please provide P<sub>1</sub>, V<sub>1</sub>, T<sub>1</sub>, P<sub>2</sub>, T<sub>2</sub>");
                     result=(P1*V1*T2)/(P2*T1);
-                    formula="V₂=(P₁ V₁ T₂)/(P₂ T₁)";
+                    formula="V<sub>2</sub>=(P<sub>1</sub> V<sub>1</sub> T<sub>2</sub>)/(P<sub>2</sub> T<sub>1</sub>)";
                 }
                 else if (solveFor=="T2"){
-                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(V2)) throw new Error("Please provide P₁, V₁, T₁, P₂, V₂");
+                    if (isNaN(P1)||isNaN(V1)||isNaN(T1)||isNaN(P2)||isNaN(V2)) throw new Error("Please provide P<sub>1</sub>, V<sub>1</sub>, T<sub>1</sub>, P<sub>2</sub>, V<sub>2</sub>");
                     result=(P2*V2*T1)/(P1*V1);
-                    formula="T₂=(P₂ V₂ T₁)/(P₁ V₁)";
+                    formula="T<sub>2</sub>=(P<sub>2</sub> V<sub>2</sub> T<sub>1</sub>)/(P<sub>1</sub> V<sub>1</sub>)";
                 }
                 let unit=solveFor.includes("P")?"pressure units":
                            solveFor.includes("V")?"volume units":
