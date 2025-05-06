@@ -130,54 +130,91 @@ document.addEventListener("DOMContentLoaded", function(){
             return true;
         }
         function balanceEquation(equation){
-            let { reactants, products }=parseEquation(equation);
+            let maxCoefficient=1250;
+            document.getElementById("balance-result").innerHTML="Balancing...";
+            let{ reactants, products }=parseEquation(equation);
             let allCompounds=[...reactants, ...products];
             let parsedCompounds=allCompounds.map(formatFormula);
-            let elements=new Set();
-            for (let compound of parsedCompounds){
-                for (let element in compound){
-                    elements.add(element);
+            let elements=Array.from(
+                parsedCompounds.reduce((set, comp)=>{
+                    Object.keys(comp).forEach(el=>set.add(el));
+                    return set;
+                }, new Set())
+            );
+            function gcd(a, b){ return b?gcd(b, a%b):a;}
+            function lcm(a, b){ return a/gcd(a, b)*b;}
+            class Fraction{
+                constructor(n, d){ this.n=n;this.d=d;this.normalize();}
+                normalize(){
+                    if (this.d<0){ this.n=-this.n;this.d=-this.d;}
+                    let g=gcd(Math.abs(this.n), Math.abs(this.d));
+                    this.n/=g;this.d/=g;
                 }
+                add(f){ return new Fraction(this.n*f.d+f.n*this.d, this.d*f.d);}
+                sub(f){ return new Fraction(this.n*f.d-f.n*this.d, this.d*f.d);}
+                mul(f){ return new Fraction(this.n*f.n, this.d*f.d);}
+                div(f){ return new Fraction(this.n*f.d, this.d*f.n);}
             }
-            elements=Array.from(elements);
             let m=allCompounds.length;
-            let maxCoefficient=750;
-            let coefficient=new Array(m).fill(1);
-            let iteration=0;
-            let maxIterations=1e35;
-            while (true){
-                iteration++;
-                document.getElementById("balance-result").innerHTML="Balancing...";
-                if (iteration>maxIterations){
-                    throw new Error("Too many tries! Cannot balance this equation.");
+            let n=elements.length;
+            let M=elements.map(el=>parsedCompounds.map((comp, j)=>(j<reactants.length?1:-1)*(comp[el]||0)));
+            let vars=m-1;
+            let eqs=n;
+            let A=Array.from({ length: eqs }, (_, i)=>{
+                let row=[];
+                for (let j=0;j<vars;j++){
+                    row.push(new Fraction(M[i][j], 1));
                 }
-                if (isEquationBalanced(coefficient, parsedCompounds.slice(0, reactants.length), parsedCompounds.slice(reactants.length), elements)){
-                    let balancedEquation="";
-                    for (let i=0;i<reactants.length;i++){
-                        balancedEquation+=coefficient[i]==1?"":coefficient[i];
-                        balancedEquation+=allCompounds[i]+" + ";
+                row.push(new Fraction(-M[i][m-1], 1));
+                return row;
+            });
+            let r=0;
+            for (let c=0;c<vars&&r<eqs;c++){
+                let pivot=r;
+                while (pivot<eqs&&A[pivot][c].n==0) pivot++;
+                if (pivot==eqs) continue;
+                [A[r], A[pivot]]=[A[pivot], A[r]];
+                let inv=new Fraction(A[r][c].d, A[r][c].n);
+                for (let j=c;j<=vars;j++){
+                    A[r][j]=A[r][j].mul(inv);
+                }
+                for (let i=0;i<eqs;i++){
+                    if (i!==r&&A[i][c].n!==0){
+                        let factor=A[i][c];
+                        for (let j=c;j<=vars;j++){
+                            A[i][j]=A[i][j].sub(factor.mul(A[r][j]));
+                        }
                     }
-                    balancedEquation=balancedEquation.slice(0, -3);
-                    balancedEquation+=" -> ";
-                    for (let i=reactants.length;i<m;i++){
-                        balancedEquation+=coefficient[i]==1?"":coefficient[i];
-                        balancedEquation+=allCompounds[i]+" + ";
-                    }
-                    balancedEquation=balancedEquation.slice(0, -3);
-                    return balancedEquation;
                 }
-                let i=m-1;
-                while (i>=0&&coefficient[i]==maxCoefficient){
-                    i--;
-                }
-                if (i<0){
-                    throw new Error(`No solution found with coefficients up to ${maxCoefficient}`);
-                }
-                coefficient[i]++;
-                for (let j=i+1;j<m;j++){
-                    coefficient[j]=1;
-                }
+                r++;
             }
+            let sol=Array(m);
+            for (let j=0;j<vars;j++){
+                let val=new Fraction(0, 1);
+                for (let i=0;i<eqs;i++){
+                    if (A[i][j].n==1&&A[i][j].d==1){
+                        val=A[i][vars];
+                        break;
+                    }
+                }
+                sol[j]=val;
+            }
+            sol[m-1]=new Fraction(1, 1);
+            let dens=sol.map(f=>f.d);
+            let commonDen=dens.reduce((a, b)=>lcm(a, b), 1);
+            let coeffs=sol.map(f=>f.n*(commonDen/f.d));
+            coeffs=coeffs.map(c=>Math.round(c));
+            if (coeffs.some(c=>c<0)){
+                coeffs=coeffs.map(c=>-c);
+            }
+            let gAll=coeffs.reduce((a, b)=>gcd(a, b), coeffs[0]);
+            coeffs=coeffs.map(c=>c/gAll);
+            if (coeffs.some(c=>Math.abs(c) > maxCoefficient)){
+                throw new Error(`No solution found with coefficients up to ${maxCoefficient}`);
+            }
+            let left=reactants.map((cmp, i)=>(coeffs[i]==1?"":coeffs[i])+cmp).join(" + ");
+            let right=products.map((cmp, i)=>(coeffs[i+reactants.length]==1?"":coeffs[i+reactants.length])+cmp).join(" + ");
+            return `${left} -> ${right}`;
         }
         function lookUpElement(){
             let input=document.getElementById("element-input").value.trim().toLowerCase();
