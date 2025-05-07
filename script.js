@@ -103,34 +103,6 @@ document.addEventListener("DOMContentLoaded", function(){
             let products=sides[1].split("+").map(p=>p.trim());
             return { reactants, products };
         }
-        function isEquationBalanced(coefficients, reactantCompounds, productCompounds, elements){
-            let reactantAtoms={};
-            let productAtoms={};
-            for (let element of elements){
-                reactantAtoms[element]=0;
-                productAtoms[element]=0;
-            }
-            for (let i=0;i<reactantCompounds.length;i++){
-                let compound=reactantCompounds[i];
-                let coeff=coefficients[i];
-                for (let element in compound){
-                    reactantAtoms[element]+=coeff*compound[element];
-                }
-            }
-            for (let i=0;i<productCompounds.length;i++){
-                let compound=productCompounds[i];
-                let coeff=coefficients[reactantCompounds.length+i];
-                for (let element in compound){
-                    productAtoms[element]+=coeff*compound[element];
-                }
-            }
-            for (let element of elements){
-                if (reactantAtoms[element]!==productAtoms[element]){
-                    return false;
-                }
-            }
-            return true;
-        }
         function balanceEquation(equation){
             let maxCoefficient=1250;
             document.getElementById("balance-result").innerHTML="Balancing...";
