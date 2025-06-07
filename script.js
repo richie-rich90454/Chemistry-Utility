@@ -1,3 +1,4 @@
+//Use: "terser script.js -o script.min.js --compress --mangle" to compress the file (make the min file)
 document.addEventListener("DOMContentLoaded", function(){
     fetch("/api/ptable",{
         headers:{
@@ -101,12 +102,12 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             let reactants=sides[0].split("+").map(r=>r.trim());
             let products=sides[1].split("+").map(p=>p.trim());
-            return { reactants, products };
+            return {reactants, products};
         }
         function balanceEquation(equation){
             let maxCoefficient=1250;
             document.getElementById("balance-result").innerHTML="Balancing...";
-            let{ reactants, products }=parseEquation(equation);
+            let {reactants, products}=parseEquation(equation);
             let allCompounds=[...reactants, ...products];
             let parsedCompounds=allCompounds.map(formatFormula);
             let elements=Array.from(
@@ -115,26 +116,28 @@ document.addEventListener("DOMContentLoaded", function(){
                     return set;
                 }, new Set())
             );
-            function gcd(a, b){ return b?gcd(b, a%b):a;}
-            function lcm(a, b){ return a/gcd(a, b)*b;}
+            function gcd(a, b){return b?gcd(b, a%b):a;}
+            function lcm(a, b){return a/gcd(a, b)*b;}
             class Fraction{
-                constructor(n, d){ this.n=n;this.d=d;this.normalize();}
+                constructor(n, d){
+                    this.n=n;this.d=d;this.normalize();
+                }
                 normalize(){
                     if (this.d<0){ this.n=-this.n;this.d=-this.d;}
                     let g=gcd(Math.abs(this.n), Math.abs(this.d));
                     this.n/=g;this.d/=g;
                 }
-                add(f){ return new Fraction(this.n*f.d+f.n*this.d, this.d*f.d);}
-                sub(f){ return new Fraction(this.n*f.d-f.n*this.d, this.d*f.d);}
-                mul(f){ return new Fraction(this.n*f.n, this.d*f.d);}
-                div(f){ return new Fraction(this.n*f.d, this.d*f.n);}
+                add(f){return new Fraction(this.n*f.d+f.n*this.d, this.d*f.d);}
+                sub(f){return new Fraction(this.n*f.d-f.n*this.d, this.d*f.d);}
+                mul(f){return new Fraction(this.n*f.n, this.d*f.d);}
+                div(f){return new Fraction(this.n*f.d, this.d*f.n);}
             }
             let m=allCompounds.length;
             let n=elements.length;
             let M=elements.map(el=>parsedCompounds.map((comp, j)=>(j<reactants.length?1:-1)*(comp[el]||0)));
             let vars=m-1;
             let eqs=n;
-            let A=Array.from({ length: eqs }, (_, i)=>{
+            let A=Array.from({length: eqs}, (_, i)=>{
                 let row=[];
                 for (let j=0;j<vars;j++){
                     row.push(new Fraction(M[i][j], 1));
@@ -635,6 +638,49 @@ document.addEventListener("DOMContentLoaded", function(){
                 document.getElementById("electrolysis-result").innerHTML=`<p>The time t=${time.toFixed(3)} s</p>`;
             }
         }
+        function predictBondType(){
+            try{
+                let element1Input=document.getElementById("element1-input").value.trim().toLowerCase();
+                let element2Input=document.getElementById("element2-input").value.trim().toLowerCase();
+                if (!element1Input||!element2Input){
+                    throw new Error("Please enter both element symbols");
+                }
+                let element1=elements.find(el=>el.symbol.toLowerCase()==element1Input);
+                let element2=elements.find(el=>el.symbol.toLowerCase()==element2Input);
+                if (!element1||!element2){
+                    throw new Error("One or both elements not found");
+                }
+                let en1=element1.electronegativity;
+                let en2=element2.electronegativity;
+                if (en1==null||en2==null){
+                    document.getElementById("bond-type-result").innerHTML="<p>Bond impossible (not proven yet) due to yet unavailable electronegativity data</p>";
+                    return;
+                }
+                let deltaEN=Math.abs(en1-en2).toFixed(2);
+                let bondType;
+                let t1=element1.type.toLowerCase();
+                let t2=element2.type.toLowerCase();
+                let isMetal1=t1.includes("metal")&&t1!=="metalloid"&&t1!=="non-metal";
+                let isMetal2=t2.includes("metal")&&t2!=="metalloid"&&t2!=="non-metal";
+                if (isMetal1||isMetal2){
+                    bondType=(isMetal1&&isMetal2)?"Metallic":"Ionic";
+                }
+                else if (deltaEN>=1.7){
+                    bondType="Ionic";
+                }
+                else if (deltaEN>=0.4){
+                    bondType="Polar Covalent";
+                }
+                else{
+                    bondType="Nonpolar Covalent";
+                }
+                let result=`<p>${element1.symbol} (${en1}) and ${element2.symbol} (${en2}) -> ΔEN=${deltaEN} -> ${bondType} bond</p>`;
+                document.getElementById("bond-type-result").innerHTML=result;
+            }
+            catch (error){
+                document.getElementById("bond-type-result").innerHTML=`<p>Error: ${error.message}</p>`;
+            }
+        }
         document.getElementById("element-input").addEventListener("keyup", lookUpElement);
         document.getElementById("formula-input").addEventListener("keyup", calculateMass);
         document.getElementById("balance-button").addEventListener("click", balanceEquations);
@@ -666,6 +712,7 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("calculate-cell-potential").addEventListener("click", calculateCellPotential);
         document.getElementById("calculate-nernst").addEventListener("click", calculateNernst);
         document.getElementById("calculate-electrolysis").addEventListener("click", calculateElectrolysis);
+        document.getElementById("calculate-bond-type").addEventListener("click", predictBondType);
     })
     .catch(err=>{
         console.error("Error fetching data:", err);
