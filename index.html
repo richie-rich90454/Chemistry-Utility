@@ -21,7 +21,7 @@
         <meta property="og:image:width" content="200">
         <meta property="og:image:height" content="200">
         <script type="application/ld+json">
-           {
+          {
                 "@context": "https://schema.org",
                 "@type": "SoftwareApplication",
                 "name": "Chemistry Utility Tools",
@@ -52,6 +52,8 @@
                 --dark-blue: #28465C;
                 --light-gray: #EBEBEB;
                 --text-dark: #000;
+                --accent-color: #4CAF50;
+                --shadow-color: rgba(0, 0, 0, .1);
             }
             body{
                 font-family: "Noto Sans", sans-serif;
@@ -59,15 +61,17 @@
                 padding: 0;
                 background-color: var(--light-gray);
                 color: var(--text-dark);
+                line-height: 1.6;
             }
             h1{
                 font-family: "Noto Sans", sans-serif;
                 color: #FFF;
                 font-size: 3.5rem;
-                background: linear-gradient(30deg, var(--primary-red), var(--primary-blue));
+                background: linear-gradient(45deg, var(--primary-red), var(--primary-blue));
                 margin: 0 0 1rem 0;
                 padding: 2rem;
                 text-align: center;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, .3);
             }
             h2{
                 font-family: "Noto Sans", sans-serif;
@@ -82,15 +86,16 @@
                 color: #FFF;
                 padding: 2rem;
                 margin-top: 2rem;
+                font-size: .9rem;
             }
             #main{
                 font-family: "Noto Sans", sans-serif;
                 background-color: #FFF;
-                max-width: 99%;
+                max-width: 1200px;
                 margin: 2rem auto;
                 padding: 2rem;
                 border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+                box-shadow: 0 4px 12px var(--shadow-color);
             }
             .main-groups{
                 font-family: "Noto Sans", sans-serif;
@@ -101,14 +106,19 @@
             .main-groups:last-child{
                 border-bottom: 2px solid var(--text-dark);
             }
-            input[type="text"], input[type="number"]{
+            input[type="text"], input[type="number"], select{
                 font-family: "Noto Sans", sans-serif;
-                max-width: 99%;
+                width: 100%;
                 padding: .8rem;
                 border: 2px solid #DDD;
                 border-radius: 4px;
                 margin: .5rem 0;
                 font-size: 1rem;
+                transition: border-color .3s ease;
+            }
+            input[type="text"]:focus, input[type="number"]:focus, select:focus{
+                border-color: var(--primary-blue);
+                outline: none;
             }
             button{
                 font-family: "Noto Sans", sans-serif;
@@ -119,11 +129,12 @@
                 border-radius: 4px;
                 cursor: pointer;
                 font-size: 1rem;
-                transition: all .3s ease-in-out;
+                transition: background-color .3s ease, transform .3s ease;
+                box-shadow: 0 2px 4px var(--shadow-color);
             }
             button:hover{
                 background-color: var(--dark-blue);
-                transform: scale(1.05);
+                transform: translateY(-2px);
             }
             .result{
                 font-family: "EB Garamond", serif;
@@ -133,6 +144,7 @@
                 border-radius: 6px;
                 border: 1px solid var(--text-dark);
                 font-size: 1.2rem;
+                box-shadow: 0 2px 8px var(--shadow-color);
             }
             .result p{
                 margin: .8rem 0;
@@ -146,18 +158,10 @@
             a:hover{
                 opacity: .8;
             }
-            select{
-                font-family: "Noto Sans", sans-serif;
-                padding: .8rem;
-                border: 2px solid #DDD;
-                border-radius: 4px;
-                margin: .5rem 0;
-                font-size: 1rem;
-            }
             .input-group{
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: .5rem;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
                 margin: 1rem 0;
             }
             #remaining-quantity-group{
@@ -173,17 +177,24 @@
             }
             @media (max-width: 768px){
                 h1{
-                    font-size: 2rem;
+                    font-size: 2.5rem;
                     padding: 1.5rem;
-                    margin: 0 0 .5rem
                 }
                 #main{
-                    margin: 1.5rem;
-                    padding: 1.5rem;
+                    margin: 1rem;
+                    padding: 1rem;
                 }
                 .main-groups{
-                    padding: 1.5rem;
-                    margin: 0 0 1.5rem 0;
+                    padding: 1rem;
+                    margin: 0 0 1rem 0;
+                }
+                .input-group{
+                    grid-template-columns: 1fr;
+                }
+            }
+            @media (min-width: 1200px){
+                #main{
+                    max-width: 1400px;
                 }
             }
         </style>
@@ -296,7 +307,7 @@
                     </div>
                     <p>Select units for R:</p>
                     <select id="ideal-R-units">
-                        <option value="atm-L">atm, L (R=0.0821)</option>
+                        <option value="atm-L">atm, L (R=.0821)</option>
                         <option value="SI">Pa, m³ (R=8.314)</option>
                     </select>
                     <button id="calculate-ideal">Calculate</button>
