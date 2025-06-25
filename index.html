@@ -21,24 +21,24 @@
         <meta property="og:image:width" content="200">
         <meta property="og:image:height" content="200">
         <script type="application/ld+json">
-          {
-                "@context": "https://schema.org",
-                "@type": "SoftwareApplication",
-                "name": "Chemistry Utility Tools",
-                "image": "https://chemutil.richardsblogs.com/favicon.png",
-                "url": "https://chemutil.richardsblogs.com/",
-                "applicationCategory": "EducationalApplication",
-                "operatingSystem": "Web",
-                "description": "Free open-source chemistry toolkit for element information lookup, molar mass calculation, equation balancing, and stoichiometry solutions.",
-                "isAccessibleForFree": true,
-                "license": "https://opensource.org/licenses/MIT",
-                "audience":{
-                    "@type": "EducationalAudience",
-                    "educationalRole": "student, teacher, researcher"
-                },
-                "softwareVersion": "1.0",
-                "featureList": "Element lookup, Molar mass calculator, Equation balancer, Stoichiometry solver"
-            }
+       {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Chemistry Utility Tools",
+            "image": "https://chemutil.richardsblogs.com/favicon.png",
+            "url": "https://chemutil.richardsblogs.com/",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Web",
+            "description": "Free open-source chemistry toolkit for element information lookup, molar mass calculation, equation balancing, and stoichiometry solutions.",
+            "isAccessibleForFree": true,
+            "license": "https://opensource.org/licenses/MIT",
+            "audience":{
+                "@type": "EducationalAudience",
+                "educationalRole": "student, teacher, researcher"
+            },
+            "softwareVersion": "1.0",
+            "featureList": "Element lookup, Molar mass calculator, Equation balancer, Stoichiometry solver"
+        }
         </script>
         <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,39 +54,98 @@
                 --text-dark: #000;
                 --accent-color: #4CAF50;
                 --shadow-color: rgba(0, 0, 0, .1);
+                --nav-height: 70px;
+            }
+            *{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
             body{
                 font-family: "Noto Sans", sans-serif;
-                margin: 0;
-                padding: 0;
                 background-color: var(--light-gray);
                 color: var(--text-dark);
                 line-height: 1.6;
+            }
+            header{
+                background: linear-gradient(45deg, var(--primary-red), var(--primary-blue));
+                padding: 2rem;
+                text-align: center;
+                box-shadow: 0 4px 12px var(--shadow-color);
             }
             h1{
                 font-family: "Noto Sans", sans-serif;
                 color: #FFF;
                 font-size: 3.5rem;
-                background: linear-gradient(45deg, var(--primary-red), var(--primary-blue));
-                margin: 0 0 1rem 0;
-                padding: 2rem;
-                text-align: center;
+                margin: 0;
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, .3);
             }
-            h2{
-                font-family: "Noto Sans", sans-serif;
-                font-size: 1.75rem;
-                margin: 0 0 1.5rem 0;
-                color: var(--dark-blue);
-            }
-            #footer{
-                font-family: "Noto Sans", sans-serif;
-                text-align: center;
-                background-color: var(--dark-blue);
+            .tagline{
                 color: #FFF;
-                padding: 2rem;
-                margin-top: 2rem;
+                font-size: 1.2rem;
+                margin-top: .5rem;
+                opacity: .9;
+            }
+            nav{
+                background-color: var(--dark-blue);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+            }
+            .nav-container{
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            nav ul{
+                display: flex;
+                justify-content: center;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            nav li{
+                flex: 0 0 auto;
+                min-width: 120px;
+                text-align: center;
+            }
+            nav a{
+                display: block;
+                color: #FFF;
+                text-decoration: none;
+                padding: 1rem .5rem;
+                transition: all .3s ease;
                 font-size: .9rem;
+                text-align: center;
+                white-space: nowrap;
+                font-weight: 600;
+                position: relative;
+                overflow: hidden;
+                background-color: rgba(255, 255, 255, .05);
+            }
+            nav a::before{
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 0;
+                background-color: var(--primary-blue);
+                transition: height .3s ease;
+                z-index: -1;
+            }
+            nav a:hover::before, nav a:focus::before{
+                height: 100%;
+            }
+            nav a.active{
+                background-color: var(--primary-blue);
+            }
+            nav a.active::before{
+                height: 100%;
+                background-color: var(--primary-red);
             }
             #main{
                 font-family: "Noto Sans", sans-serif;
@@ -102,9 +161,24 @@
                 padding: 2rem;
                 margin: 0 0 2rem 0;
                 border-top: 2px solid var(--text-dark);
+                scroll-margin-top: var(--nav-height);
             }
             .main-groups:last-child{
                 border-bottom: 2px solid var(--text-dark);
+            }
+            h2{
+                font-family: "Noto Sans", sans-serif;
+                font-size: 1.75rem;
+                margin: 0 0 1.5rem 0;
+                color: var(--dark-blue);
+                padding-bottom: .5rem;
+                border-bottom: 2px solid var(--light-gray);
+            }
+            h3{
+                font-family: "Noto Sans", sans-serif;
+                font-size: 1.4rem;
+                margin: 1.5rem 0 1rem;
+                color: var(--primary-blue);
             }
             input[type="text"], input[type="number"], select{
                 font-family: "Noto Sans", sans-serif;
@@ -131,6 +205,8 @@
                 font-size: 1rem;
                 transition: background-color .3s ease, transform .3s ease;
                 box-shadow: 0 2px 4px var(--shadow-color);
+                margin: 1rem 0;
+                font-weight: 600;
             }
             button:hover{
                 background-color: var(--dark-blue);
@@ -145,6 +221,7 @@
                 border: 1px solid var(--text-dark);
                 font-size: 1.2rem;
                 box-shadow: 0 2px 8px var(--shadow-color);
+                background-color: #F9F9F9;
             }
             .result p{
                 margin: .8rem 0;
@@ -175,10 +252,25 @@
                 font-family: "EB Garamond", serif;
                 font-variant-numeric: subscripts;
             }
+            #footer{
+                text-align: center;
+                background-color: var(--dark-blue);
+                color: #FFF;
+                padding: 2rem;
+                margin-top: 2rem;
+                font-size: .9rem;
+            }
+            .footer-content{
+                max-width: 1200px;
+                margin: 0 auto;
+            }
             @media (max-width: 768px){
                 h1{
                     font-size: 2.5rem;
                     padding: 1.5rem;
+                }
+                .tagline{
+                    font-size: 1rem;
                 }
                 #main{
                     margin: 1rem;
@@ -190,6 +282,26 @@
                 }
                 .input-group{
                     grid-template-columns: 1fr;
+                }
+                nav li{
+                    min-width: 100px;
+                }
+                nav a{
+                    padding: .8rem .4rem;
+                    font-size: .8rem;
+                }
+            }
+            @media (max-width: 480px){
+                h1{
+                    font-size: 2rem;
+                    padding: 1rem;
+                }
+                nav li{
+                    min-width: 80px;
+                }
+                nav a{
+                    padding: .7rem .3rem;
+                    font-size: .75rem;
                 }
             }
             @media (min-width: 1200px){
@@ -203,6 +315,23 @@
         <header>
             <h1>Chemistry Utility</h1>
         </header>
+        <nav>
+            <div class="nav-container">
+                <ul>
+                    <li><a href="#element-lookup" class="active">Element Lookup</a></li>
+                    <li><a href="#mass-calc">Molar Mass</a></li>
+                    <li><a href="#balancing">Equation Balancer</a></li>
+                    <li><a href="#dilution-calc">Dilution</a></li>
+                    <li><a href="#mass-percent-calc">Mass Percent</a></li>
+                    <li><a href="#solution-mixing-calc">Solution Mixing</a></li>
+                    <li><a href="#nuclear-chemistry">Nuclear</a></li>
+                    <li><a href="#gas-laws">Gas Laws</a></li>
+                    <li><a href="#electrochemistry">Electrochemistry</a></li>
+                    <li><a href="#stoichiometry">Stoichiometry</a></li>
+                    <li><a href="#bond-type-predictor">Bond Type</a></li>
+                </ul>
+            </div>
+        </nav>
         <main id="main">
             <div id="element-lookup" class="main-groups">
                 <h2>Element Information Lookup</h2>
@@ -421,6 +550,6 @@
             <p>&copy; 2025 Richards Blogs | All Rights Reserved</p>
             <p>Main site: <a href="https://www.richardsblogs.com" target="_blank">www.richardsblogs.com</a></p>
         </footer>
-        <script src="script.min.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>
